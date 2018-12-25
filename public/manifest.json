@@ -1,0 +1,61 @@
+{
+    "short_name": "Polibet",
+    "name": "Polibet",
+    "theme_color": "#fff",
+    "background_color": "#fff",
+    "display": "standalone",
+    "icons": [
+      {
+        "src": "images/favi/pb.png",
+        "type": "image/png",
+        "sizes": "48x48"
+      },
+       {
+        "src": "images/favi/pb.png",
+        "type": "image/png",
+        "sizes": "72x72"
+      },
+      {
+        "src": "images/favi/pb.png",
+        "type": "image/png",
+        "sizes": "96x96"
+      },
+       {
+        "src": "images/favi/pb.png",
+        "type": "image/png",
+        "sizes": "144x144"
+      },
+       {
+        "src": "images/favi/pb.png",
+        "type": "image/png",
+        "sizes": "168x168"
+      },
+      {
+        "src": "images/favi/pb.png",
+        "type": "image/png",
+        "sizes": "192x192"
+      },
+      {
+        "src": "images/favi/pb.png",
+        "type": "image/png",
+        "sizes": "128x128"
+      },
+      {
+        "src": "images/favi/pb.png",
+        "type": "image/png",
+        "sizes": "256x256"
+      },
+      {
+        "src": "images/favi/pb.png",
+        "type": "image/png",
+        "sizes": "384x384"
+      },
+      {
+        "src": "images/favi/pb.png",
+        "type": "image/png",
+        "sizes": "512x512"
+      }
+    ],
+    "start_url": "http://polibet.site/",
+    "orientation": "portrait"
+  }
