@@ -9,7 +9,8 @@
 	    <meta name="author" content="">
 	    <title>Rubix</title>
 	    <meta name="csrf-token" content="{{ csrf_token() }}" />
-    	<link rel="shortcut icon" href="/images/favi/pb.png">
+        <link rel="shortcut icon" href="/images/favi/pb.png">
+        <link href="/css/loaderone.css" type="text/css" rel="stylesheet">
 
 	    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 	    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -27,7 +28,15 @@
 	</head>
 	<body>
 	    <div id="root">
-	        <router-view></router-view>
+	        <router-view>
+                    <h1 style="color:white; position:absolute;  top: 30%; left: 40%; font-style:italic; font-weight:bolder; font:larger;">Rubix</h1>
+                    <div class="spinner">
+                            <div class="blob top"></div>
+                            <div class="blob bottom"></div>
+                            <div class="blob left"></div>
+                            <div class="blob move-blob"></div>
+                          </div>
+            </router-view>
 	    </div>
         <script src="/js/app.js"></script>
 

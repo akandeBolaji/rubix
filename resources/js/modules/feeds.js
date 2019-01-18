@@ -77,7 +77,7 @@ addPost( { commit, state, dispatch }, data ){
       })
       .catch( function(error){
         commit( 'setPostAddedStatus', 3 );
-        commit('setPostAddedMessage', error.response.message);
+        commit('setPostAddedMessage', error.response.data.message);
       });
 },
 /*

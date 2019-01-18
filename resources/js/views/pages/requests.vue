@@ -17,7 +17,7 @@
               >account_circle</v-icon>
           </v-flex>
           <v-flex xs6>
-             <v-card-text><b>{{user.full_name}}</b><br/>Web Developer</v-card-text>
+             <v-card-text><b>{{ user.first_name + " " + user.last_name }}</b><br/>{{user.headline}}</v-card-text>
           </v-flex>
           <v-flex align-center justify-center layout text-xs-center xs4>
         <v-btn fab small flat color="green" outline class="white--text" :loading="click" :disabled="click" @click="acceptConnect(user.id)"><v-icon >done</v-icon></v-btn>
@@ -37,6 +37,9 @@ export default {
     }
   },
   methods: {
+       userPic(data){
+         return 'http://rubix.site/images/users/' + data;
+     },
       acceptConnect(id){
         this.click = true;
         axios.post( '/api/connect/' + id + '/acceptfriend').then(response =>  {

@@ -1,111 +1,58 @@
 <template>
-<v-app>
-     <v-layout mb-5>
-
+<v-app
+ v-touch="{
+      left: () => swipe('Left'),
+    }"
+>
+  <v-layout mt-5 mb-5>
     <v-flex xs12 sm6 offset-sm3>
-         <v-btn
-              color="blue"
-              dark
-              right
-              absolute
-              fixed
-              fab
-               @click='createpost'
-            >
-              <v-icon>create</v-icon>
-            </v-btn>
-        <v-container>
+         <v-btn color="blue" dark right absolute fixed fab @click='createpost'>
+            <v-icon>create</v-icon>
+         </v-btn>
+      <v-container v-for="post in post" v-if="post.text && post.user" v-bind:key='post.id'>
       <v-card>
+          <div v-if="post && post.friendcomments || post && post.friendlikes">
+          <v-card-text v-if="post && post.friendcomments && post.friendcomments.length > 0"><b>{{ post.friendcomments[0].first_name + " " + post.friendcomments[0].last_name }} commented on this post</b></v-card-text>
+          <v-card-text v-else-if="post && post.friendlikes && post.friendlikes.length == 1"><b> {{ post.friendlikes[0].first_name + " " + post.friendlikes[0].last_name }} liked this post</b></v-card-text>
+          <v-card-text v-else-if="post && post.friendlikes && post.friendlikes.length > 1"><b>{{ post.friendlikes[0].first_name + " " + post.friendlikes[0].last_name }} and {{ post.friendlikes.length - 1 }} other connects liked this post</b></v-card-text>
+          </div>
+          <v-divider></v-divider>
           <v-card-text>
-          <v-layout
-        >
+          <v-layout>
           <v-flex xs2 sm1 md1>
             <v-avatar
-              color="black"
-            >
-              <img
-              v-if="image"
-          src="https://cdn.vuetifyjs.com/images/cards/desert.jpg"
-                alt="Avatar"
-              >
-              <v-icon
-              large
-              dark
-                v-else
-              >account_circle</v-icon>
-            </v-avatar>
-          </v-flex>
-
-          <v-flex sm10 md10 xs9 @click="showUser">
-             <strong>Akande Bolaji</strong><br/>Head of Sales - Jumia<br/> 30 mins ago
-          </v-flex>
-          <v-flex sm1 md1 xs1>
-             <v-icon @click="sheet = true">more</v-icon>
-          </v-flex>
-        </v-layout>
-          </v-card-text>
-          <v-card-text @click="showPost">
-            Located two hours south of Sydney in the <br>Southern Highlands of New South Wales, ...<span @click="showPost" style="color:grey">see more</span>
-        </v-card-text>
-
-        <v-img
-        @click="viewImage"
-         v-if="image"
-          src="https://cdn.vuetifyjs.com/images/cards/desert.jpg"
-          aspect-ratio="1.75"
-        ></v-img>
-         <v-card-text>90 likes . 120 comments</v-card-text>
-        <v-divider></v-divider>
-        <v-card-actions>
-         <v-layout>
-          <v-flex xs5 sm4 @click="addComment">
-             <v-btn flat><v-icon>message</v-icon>Comment</v-btn>
-          </v-flex>
-          <v-flex xs6 sm4 @click="sharePost">
-             <v-btn flat><v-icon>share</v-icon>Share</v-btn>
-          </v-flex>
-         </v-layout>
-        </v-card-actions>
-      </v-card>
-     </v-container>
-
-      <v-container  v-for="(post) in posts" v-bind:key='post.id'>
-      <v-card>
-          <v-card-text>
-          <v-layout
-          @click="showUser(post.user.id)"
-        >
-          <v-flex xs2 sm1 md1>
-            <v-avatar
-             v-if="post.user && post.user.profile && post.user.profile.avatar"
+             v-if="post.user && post.user.avatar"
+            @click="showUser(post.user.id)"
             color="grey lighten-4"
             >
               <img
-          :src="userPic(post.user.profile.avatar)"
+          :src="userPic(post.user.avatar)"
                 alt="Avatar"
               >
             </v-avatar>
               <v-icon
+                @click="showUser(post.user.id)"
               large
               style="font-size: 50px;"
                 v-else
               >account_circle</v-icon>
           </v-flex>
 
-          <v-flex sm10 md10 xs9>
-             <strong><b>{{ post.user.profile.first_name + " " + post.user.profile.last_name }}</b></strong><br/><span  v-if="post.user.profile.headline"> {{post.user.profile.headline}} <br/> </span> {{ post.createdDate }}
+          <v-flex @click="showUser(post.user.id)" sm10 md10 xs9>
+             <strong><b>{{ post.user.first_name + " " + post.user.last_name }}</b></strong><br/><span  v-if="post.user.headline"> {{post.user.headline}} <br/> </span> {{ getTime(post.created_at) }}
           </v-flex>
           <v-flex sm1 md1 xs1>
              <v-icon @click="sheet = true">more</v-icon>
           </v-flex>
         </v-layout>
           </v-card-text>
-          <v-card-text v-if="post.text.length < 250" @click="showPost(post.id)">
-            {{ post.text }}
+          <v-card-text v-if="post.text.length < 250">
+            <span @click="showPost(post.id)">{{ post.text }}</span>
         </v-card-text>
-          <v-card-text v-if="post.text.length >= 250" @click="showPost(post.id)">
-            {{post.text.substring(0, 250)}}...<span @click="showPost" style="color:grey"><i>see more</i></span>
+          <v-card-text v-if="post.text.length >= 250">
+            <span @click="showPost(post.id)">{{post.text.substring(0, 250)}}...<span @click="showPost(post.id)" style="color:grey"><i>see more</i></span></span>
         </v-card-text>
+            <xgplayer v-if="post.videos != 0" v-for="(video) in post.videos" v-bind:key='video.id' :noDestroy="false" :options="playerOption(video.path)"></xgplayer>
         <v-container fluid grid-list-sm>
           <v-layout v-if="post.images.length == 1" row wrap>
                 <v-flex v-for="(image) in post.images"
@@ -113,7 +60,7 @@
         v-bind:key='image.id'
         >
         <v-img
-        @click="viewImage(image.id)"
+         @click="showPost(post.id)"
           :src="postImage(image.path)"
           aspect-ratio="1"
         ></v-img>
@@ -125,7 +72,7 @@
         v-bind:key='image.id'
         >
         <v-img
-        @click="viewImage(image.id)"
+         @click="showPost(post.id)"
           :src="postImage(image.path)"
           aspect-ratio="1"
         ></v-img>
@@ -137,7 +84,7 @@
         v-bind:key='image.id'
         >
         <v-img
-        @click="viewImage(image.id)"
+         @click="showPost(post.id)"
           :src="postImage(image.path)"
           aspect-ratio="1.65"
         ></v-img>
@@ -147,7 +94,7 @@
         v-bind:key='image.id'
         >
         <v-img
-        @click="viewImage(image.id)"
+         @click="showPost(post.id)"
           :src="postImage(image.path)"
           aspect-ratio="1"
         ></v-img>
@@ -159,7 +106,7 @@
         v-bind:key='image.id'
         >
         <v-img
-        @click="viewImage(image.id)"
+         @click="showPost(post.id)"
           :src="postImage(image.path)"
           aspect-ratio="1"
         ></v-img>
@@ -168,14 +115,14 @@
            xs6
            >
            <v-img
-            @click="viewImage(image.id)"
+            @click="showPost(post.id)"
           :src="postImage(post.images[3].path)"
           aspect-ratio="1"
            >
            <v-container justify-center align-center>
                <v-card color="transparent" justify-center align-center>
                    <v-card-text  class="white--text" justify-center align-center>
-            <span class="white--text"><h4><b>+ {{ post.images.slice(4).length }} more ...</b></h4></span>
+            <span class="white--text"  @click="showPost(post.id)"><h4><b>+ {{ post.images.slice(4).length }} more ...</b></h4></span>
                    </v-card-text>
                </v-card>
            </v-container>
@@ -183,11 +130,15 @@
            </v-flex>
        </v-layout>
         </v-container>
-         <v-card-text>90 likes . 120 comments</v-card-text>
+         <v-card-text v-if="post.likes && post.likes.length != 0 || post.comments && post.comments.length != 0"><span @click="showPost(post.id)"  v-if="post.likes.length > 1">{{ post.likes.length }} likes .</span>
+         <span @click="showPost(post.id)"  v-else-if="post.likes.length == 1">{{ post.likes.length }} like .</span>
+         <span @click="showPost(post.id)"  v-if="post.comments.length == 1">{{ post.comments.length }} comment</span>
+         <span @click="showPost(post.id)"  v-else-if="post.comments.length > 1">{{ post.comments.length }} comments</span>
+         </v-card-text>
         <v-divider></v-divider>
         <v-card-actions>
          <v-layout>
-             <Likes :post="post"></Likes>
+             <Likes :post="post" v-on:addlike="likeAdded" v-on:removelike="likeRemoved"></Likes>
              <v-flex xs5 sm4 @click="addComment(post.id)">
              <v-btn flat><v-icon>message</v-icon>Comment</v-btn>
             </v-flex>
@@ -196,9 +147,10 @@
           </v-flex>
          </v-layout>
         </v-card-actions>
-        <addComment :clicked="clicked" :user="user" :post="post"></addComment>
+        <addComment v-on:addcomment="commentAdded"  :clicked="clicked" :user="user" :post="post"></addComment>
       </v-card>
      </v-container>
+     <infinite-loading v-show="infinite" @distance="1" @infinite="infiniteHandler"></infinite-loading>
     </v-flex>
   </v-layout>
    <v-bottom-sheet v-model="sheet">
@@ -253,21 +205,33 @@
 import Likes from './likes.vue';
 import Comment from './comment.vue';
 import addComment from './add-comment.vue';
+var _ = require('lodash');
+var moment = require('moment-timezone');
 export default {
     components: {
       Likes,
       addComment,
       Comment
     },
+
   created () {
-    this.getPosts();
-     this.fetchAuthenticatedUser();
+    //this.getPosts();
   },
 
 
   data () {
     return {
+        newpost: null,
         clicked: '',
+        post: [
+
+
+        ],
+        infinite: true,
+        user: {
+
+        },
+        page: 1,
         addcomment:false,
         sheet: false,
        image: false,
@@ -275,6 +239,29 @@ export default {
   },
 
    methods: {
+       swipe(direction){
+         //this.$router.push('/messages');
+       },
+       likeAdded(value) {
+          console.log(value)
+          value.likes.push(1);
+       },
+       likeRemoved(value) {
+          console.log(value)
+          value.likes.pop();
+       },
+        commentAdded(value) {
+          console.log(value)
+          value.comments.push(1);
+       },
+      playerOption(data) {
+           const source = 'http://rubix.site/post_videos/' + data;
+           return {
+             url: source,
+              keyShortcut: 'off',
+             width: '100%' // Depends on its wrapper element.
+           }
+        },
        hidePost(data){
          console.log('hide this post');
        },
@@ -296,10 +283,14 @@ export default {
             console.log('share the post to others');
        },
        showPost(data){
+           this.$router.push(`/post/${data}`);
            console.log('go to post page');
        },
         showUser(data){
+            if (data != this.user.id) {
+             this.$router.push(`/user/${data}`);
             console.log('show the user information');
+            }
        },
         viewImage(data){
               console.log('view the image of the post');
@@ -308,8 +299,161 @@ export default {
       this.$router.push('/createpost');
     },
     getPosts() {
-      this.$store.dispatch( 'loadPosts');
+         axios.get('/api/posts').then(response =>  {
+                     console.log(response.data.data);
+                     let friendspost = response.data.data.friendspost;
+                    let friendslike = response.data.data.friendlikes;
+                    let friendscomment = response.data.data.friendcomments;
+                    let userpost = response.data.data.userpost;
+                    let all = _.concat(friendscomment, friendslike, friendspost, userpost);
+                    let alls = _.orderBy(all, ['created_at'], ['desc']);
+                    //_.uniqBy([alls], 'id');
+                    console.log(alls);
+                    this.post = alls;
+                    this.user = response.data.user
+                }).catch(error => {
+                    //no network
+                });
     },
+    infiniteHandler($state) {
+     axios.get('/api/posts?page='+this.page).then(response =>  {
+                     console.log(response.data);
+                      this.user = response.data.user
+                      Echo.private(`post.${this.user.id}`)
+                        .listen('PostEvent', (e) => {
+                            console.log(e.post);
+                            this.post.unshift(e.post);
+                            this.newpost = true;
+                            console.log(this.post);
+                            //this.message.push(e.message);
+                        });
+                       Echo.private(`comment.${this.user.id}`)
+                        .listen('CommentEvent', (e) => {
+                            console.log(e);
+                            const checker = _.some(this.post, ['id', e.post.id]);
+                            console.log(checker);
+                            if (checker == true) {
+                            _.forEach(this.post, function(post) {
+                                if (post.id == e.post.id) {
+                                   //add one to comment
+                                    post.comments.push(1);
+                                }
+                             })
+                            }
+                            else {
+                                  const newpost = {
+                                    comments: e.post.comments,
+                                    created_at: e.post.created_at,
+                                    id : e.post.id,
+                                    images : e.post.images,
+                                    likes : e.post.likes,
+                                    friendcomments : [e.auth],
+                                    text : e.post.text,
+                                    user : e.post.user,
+                                    user_id : e.post.user_id,
+                                    userlike : e.post.userlike,
+                                    videos : e.post.videos,
+                                  };
+                                  this.post.unshift(newpost);
+                                  this.newpost = true;
+                                }
+                            //this.post.unshift(e.post);
+                            console.log(this.post);
+                            //this.message.push(e.message);
+                        });
+                        Echo.private(`like.${this.user.id}`)
+                        .listen('LikeEvent', (e) => {
+                            console.log(e);
+                            const checker = _.some(this.post, ['id', e.post.id]);
+                            console.log(checker);
+                            if (checker == true) {
+                            _.forEach(this.post, function(post) {
+                                if (post.id == e.post.id) {
+                                   //add one to comment
+                                    post.likes.push(1);
+                                }
+                             })
+                            }
+                            else {
+                                  const newpost = {
+                                    comments: e.post.comments,
+                                    created_at: e.post.created_at,
+                                    id : e.post.id,
+                                    images : e.post.images,
+                                    likes : e.post.likes,
+                                    friendlikes : [e.auth],
+                                    text : e.post.text,
+                                    user : e.post.user,
+                                    user_id : e.post.user_id,
+                                    userlike : e.post.userlike,
+                                    videos : e.post.videos,
+                                  };
+                                  this.post.unshift(newpost);
+                                  this.newpost = true;
+                                }
+                            //this.post.unshift(e.post);
+                            console.log(this.post);
+                            //this.message.push(e.message);
+                        });
+                        Echo.private(`like.${this.user.id}`)
+                        .listen('UnlikeEvent', (e) => {
+                            console.log(e);
+                            const checker = _.some(this.post, ['id', e.post.id]);
+                            console.log(checker);
+                            if (checker == true) {
+                            _.forEach(this.post, function(post) {
+                                if (post.id == e.post.id) {
+                                   //add one to comment
+                                    post.likes.pop();
+                                }
+                             })
+                            }
+                            //this.post.unshift(e.post);
+                            console.log(this.post);
+                            //this.message.push(e.message);
+                        });
+                if (response.data.friendspost.last_page > this.page || response.data.friendlikes.last_page > this.page || response.data.friendcomments.last_page > this.page || response.data.userpost.last_page > this.page) {
+                        this.page += 1;
+                        let friendspost = response.data.friendspost.data;
+                        let friendslike = response.data.friendlikes.data;
+                        let friendscomment = response.data.friendcomments.data;
+                        let userpost = response.data.userpost.data;
+                        let all = _.concat(friendscomment, friendslike, friendspost, userpost);
+                        let alls = _.orderBy(all, ['created_at'], ['desc']);
+                        //let alls = _.orderBy(_.uniqBy([alls], 'id'), ['created_at'], ['desc']);
+                        let unique =_.uniqBy(alls, 'id');
+                        console.log(alls);
+                        console.log(unique);
+                        this.post.push(...unique);
+                        $state.loaded();
+                     }else {
+                         let friendspost = response.data.friendspost.data;
+                        let friendslike = response.data.friendlikes.data;
+                        let friendscomment = response.data.friendcomments.data;
+                        let userpost = response.data.userpost.data;
+                        let all = _.concat(friendscomment, friendslike, friendspost, userpost);
+                        let alls = _.orderBy(all, ['created_at'], ['desc']);
+                        //let alls = _.orderBy(_.uniqBy([alls], 'id'), ['created_at'], ['desc']);
+                        let unique =_.uniqBy(alls, ['id']);
+                        console.log(alls);
+                        console.log(unique);
+                        this.post.push(...unique);
+                        $state.complete();
+                        this.infinite = false;
+                     }
+
+                    //this.page = this.page + 1;
+                }).catch(error => {
+                    $state.complete();
+                });
+},
+
+ getTime(time){
+         var timezone = moment.tz.guess();
+         console.log(timezone);
+       return moment(time).tz(timezone).fromNow();
+     },
+
     fetchAuthenticatedUser() {
       this.$store.dispatch( 'getUser');
     },
@@ -322,6 +466,9 @@ export default {
      },
      postVideo(data){
            return 'http://rubix.site/post_videos/' + data;
+     },
+     settPosts(data){
+
      }
   },
 
@@ -330,15 +477,20 @@ export default {
    },
 
   computed: {
-
-  /*
-    Determines if the cafe is still processing the like action.
-  */
+     player() {
+        return this.$refs.videoPlayer.player
+      },
      posts(){
-       return this.$store.getters.getPosts;
-     },
-      user(){
-       return this.$store.getters.getUserData;
+         const friendspost = this.$store.getters.getPosts.friendspost;
+         const friendslike = this.$store.getters.getPosts.friendlikes;
+         const friendscomment = this.$store.getters.getPosts.friendcomments;
+         const userpost = this.$store.getters.getPosts.userpost;
+         const all = _.concat(friendscomment, friendslike, friendspost, userpost);
+         const alls = _.orderBy(all, ['created_at'], ['desc']);
+         console.log(alls);
+         this.post = alls;
+         return this.post;
+       //return this.$store.getters.getPosts;
      },
 
      postImages(){
@@ -363,7 +515,7 @@ export default {
 </script>
 
 
-<style scoped>
+<style>
 .img img {
   border-radius : 50%;
 };

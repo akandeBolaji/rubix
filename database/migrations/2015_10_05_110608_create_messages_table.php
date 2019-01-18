@@ -8,14 +8,16 @@ class CreateMessagesTable extends Migration
 {
     /**
      * Run the migrations.
-     * 
+     *
      * @return void
      */
     public function up()
     {
         Schema::create('messages', function (Blueprint $table) {
             $table->increments('id');
-            $table->text('message');
+            $table->text('message')->nullable();
+            $table->string('file')->nullable();
+            $table->string('image')->nullable();
             $table->boolean('is_seen')->default(0);
             $table->boolean('deleted_from_sender')->default(0);
             $table->boolean('deleted_from_receiver')->default(0);
@@ -27,7 +29,7 @@ class CreateMessagesTable extends Migration
 
     /**
      * Reverse the migrations.
-     * 
+     *
      * @return void
      */
     public function down()

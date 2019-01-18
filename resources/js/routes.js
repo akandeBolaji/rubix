@@ -1,17 +1,12 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import helper from './services/helper'
-import CreatePost from './pages/createposts.vue';
-import EditProfile from './pages/edit.vue';
+import CreatePost from './pages/createpost.vue';
+import EditProfile from './pages/editprofile.vue';
 
 Vue.use(VueRouter);
 
 let routes = [
-    {
-        path: '/dashboard',
-        component: require('./views/pages/dashboard'),
-        meta: { requiresAuth: true },
-    },
     {
         path: '/feeds',
         component: require('./views/pages/dash'),
@@ -19,22 +14,22 @@ let routes = [
         children: [
             {
                 path: "/",
-                name: "tab-1",
+                name: "feeds",
                 component: require('./views/pages/feeds'),
               },
               {
                 path: "/messages",
-                name: "tab-2",
+                name: "messages",
                 component: require('./views/pages/messages'),
               },
               {
                 path: "/networks",
-                name: "tab-3",
+                name: "networks",
                 component: require('./views/pages/networks'),
               },
               {
                 path: "/profile",
-                name: "tab-4",
+                name: "profile",
                 component: require('./views/pages/profile'),
               }
         ]
@@ -52,13 +47,33 @@ let routes = [
         meta: { requiresAuth: true },
     },
     {
+        path: '/post/:id',
+        component: require('./views/pages/post'),
+        meta: { requiresAuth: true },
+    },
+    {
+        path: '/user/:id',
+        component: require('./views/pages/user'),
+        meta: { requiresAuth: true },
+    },
+    {
         path: '/editprofile',
         component: EditProfile,
         meta: { requiresAuth: true }
     },
     {
+        path: '/notifications',
+        component: require('./views/pages/notification'),
+        meta: { requiresAuth: true }
+    },
+    {
         path: '/connects',
         component: require('./views/pages/connects-list'),
+        meta: { requiresAuth: true }
+    },
+    {
+        path: '/search',
+        component: require('./views/pages/search'),
         meta: { requiresAuth: true }
     },
     {

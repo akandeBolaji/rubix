@@ -3,8 +3,29 @@ import axios from 'axios'
 import VeeValidate from 'vee-validate'
 import Vuetify from 'vuetify'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
-import VueChatScroll from 'vue-chat-scroll'
-Vue.use(VueChatScroll)
+import VueXgplayer from 'vue-xgplayer'
+
+// require videojs style
+import 'video.js/dist/video-js.css'
+import InfiniteLoading from 'vue-infinite-loading';
+import VueResource from 'vue-resource'
+
+
+Vue.use(VueResource);
+
+Vue.use(InfiniteLoading, { /* options */ });
+
+
+Vue.use(VueXgplayer, {
+    // globalOptions
+    enterLogo: {
+      url: '/images/video-player-loading.png',
+      width: 100,
+      height: 40
+    },
+    playsinline: false
+  })
+
 import 'vuetify/dist/vuetify.min.css'
 
 
@@ -59,5 +80,31 @@ window.Pusher = require('pusher-js');
             Authorization: 'Bearer ' + localStorage.getItem('auth_token')
         },
     },
+});
+
+function debounce(fn, delay = 300) {
+	var timeoutID = null;
+
+    return function () {
+		clearTimeout(timeoutID);
+
+        var args = arguments;
+        var that = this;
+
+        timeoutID = setTimeout(function () {
+        	fn.apply(that, args);
+        }, delay);
+    }
+};
+
+// this is where we integrate the v-debounce directive!
+// We can add it globally (like now) or locally!
+Vue.directive('debounce', (el, binding) => {
+	if (binding.value !== binding.oldValue) {
+		// window.debounce is our global function what we defined at the very top!
+		el.oninput = debounce(ev => {
+			el.dispatchEvent(new Event('change'));
+		}, parseInt(binding.value) || 300);
+	}
 });
 

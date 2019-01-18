@@ -1,7 +1,7 @@
 <template>
   <v-app>
       <v-container mt-5 mb-5>
-      <v-card height="100%" v-if="user.pending_request == 0">
+      <v-card height="100%" v-if="data.pending_request == 0">
           <v-card-text
           height="100%"
           >
@@ -18,8 +18,8 @@
          </v-layout>
           </v-card-text>
       </v-card>
-      <v-card v-else-if="user.pending_request != 0">
-        <span v-for="request in user.pending_request" :key="request.id" row wrap>
+      <v-card v-else-if="data.pending_request != 0">
+        <span v-for="request in data.pending_request" :key="request.id" row wrap>
             <Request :user="request"></Request>
             <v-divider></v-divider>
         </span>
@@ -34,7 +34,8 @@ export default {
      Request
     },
   mounted () {
-    this.fetchAuthenticatedUser()
+    this.fetchReceived()
+    //this.fetchAuthenticatedUser()
   },
 
   data () {
@@ -43,29 +44,24 @@ export default {
       disable: false,
       listVideo: false,
       dialog: false,
+      data: '',
       info: false,
       infotext: '',
       notShown: false,
       avatar: '',
     }
   },
-  computed: {
-     user(){
-       return this.$store.getters.getUserData;
-     },
-   },
 
-   watch: {
-
-   },
 
   methods: {
-    userPic(data){
-         return 'http://rubix.site/images/users/' + data;
-     },
-    fetchAuthenticatedUser() {
-      this.$store.dispatch( 'getUser');
+    fetchReceived() {
+         axios.get('/api/received').then(response =>  {
+                  this.data = response.data;
+                }).catch(error => {
+
+                });
     },
+
   }
 }
 </script>

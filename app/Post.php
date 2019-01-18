@@ -25,7 +25,15 @@ class Post extends Model
       }
 
     public function comments(){
-        return $this->belongsToMany( 'App\User', 'users_posts_comments', 'post_id', 'user_id');
+        return $this->belongsToMany( 'App\User', 'users_posts_comments', 'post_id', 'user_id')->as('data')->withPivot('text');
+    }
+
+    public function friendcomments(){
+        return $this->belongsToMany( 'App\User', 'users_posts_comments', 'post_id', 'user_id')->whereIn('user_id', JWTAuth::parseToken()->authenticate()->getFriends()->pluck('id'))->as('data')->withPivot('text');
+    }
+
+    public function friendlikes(){
+        return $this->belongsToMany( 'App\User', 'users_posts_likes', 'post_id', 'user_id')->whereIn('user_id', JWTAuth::parseToken()->authenticate()->getFriends()->pluck('id'));
     }
 
     public function userlike(){

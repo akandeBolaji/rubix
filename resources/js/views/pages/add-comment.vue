@@ -1,15 +1,15 @@
 <template>
-     <v-card-text v-show="clicked == post.id && !submitted">
+     <v-card-text v-show="clicked == post.id">
                 <v-form>
                <v-layout
         >
           <v-flex xs2 sm1 md1>
             <v-avatar
-            v-if="user.profile && user.profile.avatar"
+            v-if="user.avatar"
               color="grey lighten-4"
             >
               <img
-          :src="userPic(user.profile.avatar)"
+          :src="userPic(user.avatar)"
                 alt="Avatar"
               >
             </v-avatar>
@@ -25,7 +25,7 @@
                </v-layout>
                <v-layout>
           <v-flex xs8>
-              <v-btn outline class="white--text" @click="submit(post.id)" :disabled="dialog" :loading="dialog" color="blue">Post Comment</v-btn>
+              <v-btn outline class="white--text" @click="submit(post.id, post)" :disabled="dialog || !data.comment" :loading="dialog" color="blue">Post Comment</v-btn>
           </v-flex>
         </v-layout>
               </v-form>
@@ -37,7 +37,6 @@ export default {
      props:['post', 'user', 'clicked'],
   data () {
     return {
-        submitted: false,
         dialog: false,
         data:{
            comment: '',
@@ -53,12 +52,13 @@ export default {
      userPic(data){
          return 'http://rubix.site/images/users/' + data;
      },
-        submit(post) {
+        submit(post, data) {
             this.data.post_id = post;
             this.dialog = true;
              axios.post('/api/posts/comment', this.data).then(response =>  {
                     this.dialog = false;
-                    this.submitted = true
+                    this.data = {};
+                    this.$emit('addcomment', data);
                 }).catch(error => {
                     this.dialog = false;
                 });

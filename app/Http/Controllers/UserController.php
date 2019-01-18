@@ -38,7 +38,83 @@ class UserController extends Controller
             $users->orderBy(request('sortBy'),request('order'));
 
 		return $users->paginate(request('pageLength'));
-	}
+    }
+
+    public function search(Request $request)
+    {
+        $user = JWTAuth::parseToken()->authenticate();
+        if ($request->keywords == null){
+            return response()->json([]);
+        }
+        //$query = $request->query('query');
+
+        $user = \App\User::whereRaw("CONCAT(first_name, ' ', last_name) LIKE '%$request->keywords%'")->
+        orWhereRaw("CONCAT(last_name, ' ', first_name) LIKE '%$request->keywords%'")->get();
+        $users = \App\User::whereRaw("CONCAT(first_name, ' ', last_name) LIKE '%$request->keywords%'")->
+        orWhereRaw("CONCAT(last_name, ' ', first_name) LIKE '%$request->keywords%'")->
+        paginate(20);
+        //whereRaw('concat(\'first_name\', \'last_name\')', 'LIKE', '%' . $request->keywords . '%');
+
+        return response()->json($users);
+    }
+
+    public function getUser($id){
+        $auth = JWTAuth::parseToken()->authenticate();
+        $user = \App\User::find($id);
+        if($auth == $user){
+            $status = 'user';
+            $friends_count = $user->getFriendsCount();
+            $profile = $user->Profile;
+            $posts = $user->Post;
+            $skill = $user->Skills;
+            $experience = $user->Experiences;
+            $accomplishment = $user->Accomplishments;
+            return response()->json(compact('user', 'friends_count', 'status'), 201);
+        }
+        $user->view = $user->view + 1;
+        $user->save();
+        if($auth != $user && $auth->isFriendWith($user)){
+            $status = 'friends';
+            $friends_count = $user->getFriendsCount();
+            $profile = $user->Profile;
+            $posts = $user->Post;
+            $skill = $user->Skills;
+            $experience = $user->Experiences;
+            $accomplishment = $user->Accomplishments;
+            return response()->json(compact('user', 'friends_count', 'status'), 201);
+        }
+        if ($auth->hasFriendRequestFrom($user)) {
+            $status = 'accept';
+            $friends_count = $user->getFriendsCount();
+            $profile = $user->Profile;
+            $posts = $user->Post;
+            $skill = $user->Skills;
+            $experience = $user->Experiences;
+            $accomplishment = $user->Accomplishments;
+            return response()->json(compact('user', 'friends_count', 'status'), 201);
+        }
+
+        if ($auth->hasSentFriendRequestTo($user)) {
+            $status = 'pending';
+            $friends_count = $user->getFriendsCount();
+            $profile = $user->Profile;
+            $posts = $user->Post;
+            $skill = $user->Skills;
+            $experience = $user->Experiences;
+            $accomplishment = $user->Accomplishments;
+            return response()->json(compact('user', 'friends_count', 'status'), 201);
+        }
+        else {
+            $status = 'send';
+            $friends_count = $user->getFriendsCount();
+            $profile = $user->Profile;
+            $posts = $user->Post;
+            $skill = $user->Skills;
+            $experience = $user->Experiences;
+            $accomplishment = $user->Accomplishments;
+            return response()->json(compact('user', 'friends_count', 'status'), 201);
+        }
+    }
 
     public function updateProfile(Request $request){
 
@@ -139,10 +215,10 @@ class UserController extends Controller
             return response()->json(['message' => $validation->messages()->first()],422);
 
         $user = JWTAuth::parseToken()->authenticate();
-        $profile = $user->Profile;
+        //$profile = $user->Profile;
 
-        if($profile->avatar && \File::exists($this->avatar_path.$profile->avatar))
-            \File::delete($this->avatar_path.$profile->avatar);
+        if($user->avatar && \File::exists($this->avatar_path.$user->avatar))
+            \File::delete($this->avatar_path.$user->avatar);
 
         $extension = $request->file('avatar')->getClientOriginalExtension();
         $filename = uniqid();
@@ -152,8 +228,8 @@ class UserController extends Controller
            // $constraint->aspectRatio();
         //});
         //$img->save($this->avatar_path.$filename.".".$extension);
-        $profile->avatar = $filename.".".$extension;
-        $profile->save();
+        $user->avatar = $filename.".".$extension;
+        $user->save();
 
         return response()->json(['message' => 'Avatar updated!']);
     }
@@ -162,15 +238,15 @@ class UserController extends Controller
 
         $user = JWTAuth::parseToken()->authenticate();
 
-        $profile = $user->Profile;
-        if(!$profile->avatar)
+        //$profile = $user->Profile;
+        if(!$user->avatar)
             return response()->json(['message' => 'No avatar uploaded!'],422);
 
-        if(\File::exists($this->avatar_path.$profile->avatar))
-            \File::delete($this->avatar_path.$profile->avatar);
+        if(\File::exists($this->avatar_path.$user->avatar))
+            \File::delete($this->avatar_path.$user->avatar);
 
-        $profile->avatar = null;
-        $profile->save();
+        $user->avatar = null;
+        $user->save();
 
         return response()->json(['message' => 'Avatar removed!']);
     }

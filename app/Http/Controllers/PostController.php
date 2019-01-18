@@ -8,6 +8,13 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use App\postImage;
 use App\postVideo;
 use App\Post;
+use App\Events\PostEvent;
+use App\Events\CommentEvent;
+use App\Events\LikeEvent;
+use App\Events\UnlikeEvent;
+use App\Events\Comment;
+use App\Events\Like;
+use App\Events\Unlike;
 use Validator;
 
 
@@ -41,7 +48,13 @@ class PostController extends Controller
           'created_at'    => date('Y-m-d H:i:s'),
           'updated_at'    => date('Y-m-d H:i:s')
     ] );
+    $data = $post;
+    $friends = $user->getFriends();
 
+    if ($friends) {
+    broadcast(new CommentEvent($user, $data, $friends));
+    }
+    broadcast(new Comment($user, $data))->toOthers();
     return response()->json( ['message' => $post->id,'post_comment' => true], 201 );
   }
 
@@ -56,7 +69,13 @@ class PostController extends Controller
           'created_at'    => date('Y-m-d H:i:s'),
           'updated_at'    => date('Y-m-d H:i:s')
     ] );
+    $data = $post;
+    $friends = $user->getFriends();
 
+    if ($friends) {
+    broadcast(new LikeEvent($user, $data, $friends));
+    }
+    broadcast(new Like($user, $data))->toOthers();
     return response()->json( ['message' => $post->id,'post_liked' => true], 201 );
   }
 
@@ -65,20 +84,27 @@ class PostController extends Controller
     $post = Post::where('id', '=', $postID)->first();
 
     $post->likes()->detach( $user->id );
+    $data = $post;
+    $friends = $user->getFriends();
 
+    if ($friends) {
+    broadcast(new UnlikeEvent($user, $data, $friends));
+    }
+    broadcast(new Unlike($user, $data))->toOthers();
     return response( ['message' => $post->id,'post_unliked' => true], 201);
   }
 
   public function getPosts(){
     $user = JWTAuth::parseToken()->authenticate();
-    //$posts = Post::all();
-    //foreach($posts as $post) {
-       // $userlike = $post->likes()->where('user_id', $user->id)->count();
-      //}
-
-    //$postImage = \App\postImage;
-    $post = \App\Post::with(['user.profile','images', 'comments','userlike', 'videos','comments', 'likes'])->get();
-    return response()->json($post, 201);
+    $friendspost = Post::whereIn('user_id', $user->getFriends()->pluck('id'))->with(['user','images', 'comments','userlike', 'videos', 'likes'])->latest()->paginate(10);
+    $userpost = Post::where('user_id', $user->id)->with(['user','images', 'comments','userlike', 'videos', 'likes'])->latest()->paginate(10);
+    $friendcomments = Post::whereNotIn('user_id', $user->getFriends()->pluck('id'))
+    ->whereHas('friendcomments')->with(['user','images', 'comments','userlike', 'videos', 'likes', 'friendcomments'])->latest()->paginate(10);
+    $friendlikes = Post::whereNotIn('user_id', $user->getFriends()->pluck('id'))
+    ->whereHas('friendlikes')->with(['user','images', 'comments','userlike', 'videos', 'likes', 'friendlikes'])->latest()->paginate(10);
+    //$post = Post::with(['user','images', 'comments','userlike', 'videos', 'likes'])->latest()->paginate(10);
+    //return response()->json(['post' => $post, 'user' => $user], 201);
+    return response()->json(compact('userpost', 'friendcomments', 'friendspost', 'friendlikes', 'user'), 201);
 }
 
 /*
@@ -93,6 +119,18 @@ class PostController extends Controller
 */
 public function getPost( $id ){
 
+    $auth = JWTAuth::parseToken()->authenticate();
+    $post = Post::find($id);
+    $user = $post->User;
+    $images = $post->Images;
+    $comments = $post->Comments;
+    $userlike = $post->Userlike;
+    $videos = $post->Videos;
+    $likes = $post->Likes;
+
+    //$post = $post->with(['user','images', 'comments','userlike', 'videos', 'likes'])->get();
+    return response()->json(compact('post', 'auth'), 201);
+    //return response()->json(compact('post', 'auth', 'user', 'images', 'comments', 'userlike', 'videos', 'likes'), 201);
 }
  /*
   |-------------------------------------------------------------------------------
@@ -103,6 +141,14 @@ public function getPost( $id ){
   | Description:    Adds a new post to the application
   */
  public function newPost(Request $request){
+    $validation = Validator::make($request->all(), [
+        'text' => 'required',
+        'videos' => 'mimes:mp4,3gp|max:25000'
+    ]);
+    //return response()->json(['message' => $request->all()],422);
+
+    if($validation->fails())
+        return response()->json(['message' => $validation->messages()->first()],422);
      $user = JWTAuth::parseToken()->authenticate();
      $post = new Post();
     // return response()->json($request->file('files[0]'));
@@ -127,7 +173,8 @@ public function getPost( $id ){
      }
      if ($request->hasFile('videos')){
         //return response()->json(["message" => "video detected"]);
-         foreach($request->file('videos') as $video) {
+        $video = $request->file('videos');
+
            $destinationPath = 'post_videos';
            $videoname = $video->getClientOriginalName();
            $video->move($destinationPath, $videoname);
@@ -137,8 +184,13 @@ public function getPost( $id ){
            ]);
            $post->videos()->save($video);
          }
-       }
+         $data = $post;
+
+         $friends = $user->getFriends();
        //$images = $post->Images;
+       if ($friends) {
+       broadcast(new PostEvent($user, $data, $friends));
+       }
      return response()->json(['message' => 'Post Added Successfully'], 201);
      //return response()->json(compact('post','images'), 201);
      //return response()->json($post, 201);

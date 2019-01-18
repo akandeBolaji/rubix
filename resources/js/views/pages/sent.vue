@@ -1,7 +1,7 @@
 <template>
   <v-app>
       <v-container mt-5 mb-5>
-      <v-card v-if="!user.pending_friendship" height="100%">
+      <v-card v-if="data.pending_friendship == 0" height="100%">
          <v-layout>
              <v-flex
             align-center
@@ -15,9 +15,9 @@
              </v-flex>
          </v-layout>
       </v-card>
-      <v-card v-else-if="user.pending_friendship">
+      <v-card v-else-if="data.pending_friendship">
           <v-card-text>
-              <span v-for="pending in user.pending_friendship" :key="pending.id">
+              <span v-for="pending in data.pending_friendship" :key="pending.id">
             <Pending :user="pending"></Pending>
             <v-divider></v-divider>
             </span>
@@ -33,7 +33,8 @@ export default {
      Pending
     },
   mounted () {
-    this.fetchAuthenticatedUser()
+    this.fetchSent()
+    //this.fetchAuthenticatedUser()
   },
 
   data () {
@@ -42,6 +43,7 @@ export default {
       disable: false,
       listVideo: false,
       dialog: false,
+      data: '',
       info: false,
       infotext: '',
       notShown: false,
@@ -59,11 +61,12 @@ export default {
    },
 
   methods: {
-    userPic(data){
-         return 'http://rubix.site/images/users/' + data;
-     },
-    fetchAuthenticatedUser() {
-      this.$store.dispatch( 'getUser');
+       fetchSent() {
+         axios.get('/api/sent').then(response =>  {
+                  this.data = response.data;
+                }).catch(error => {
+
+                });
     },
   }
 }

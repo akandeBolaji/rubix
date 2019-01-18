@@ -1,7 +1,7 @@
 <template>
 <v-app>
-<v-container v-if="user.friends_count">
-    <v-card class="elevation-6">
+<v-container mt-5 v-if="friendscount != null">
+    <v-card v-if="friendscount != null" class="elevation-6">
     <v-layout row wrap>
         <v-flex xs12
         align-center
@@ -9,59 +9,63 @@
         layout
         text-xs-center
         >
-           <v-card-title @click="viewConnection" v-if="user.friends_count">
-            {{ user.friends_count }} <br/>
+           <v-card-title @click="viewConnection" v-if="friendscount">
+            {{ friendscount }} <br/>
             View Connections
+          </v-card-title>
+           <v-card-title v-else>
+            No Connections
           </v-card-title>
         </v-flex>
     </v-layout>
     </v-card>
 </v-container>
 
-<v-container>
-    <v-card class="elevation-6">
+<v-container v-if="pending != null">
+    <v-card v-if="pending != null" class="elevation-6">
     <v-layout row wrap>
         <v-flex xs7
         >
-           <v-card-title v-if="user.pending_request == 0">
+           <v-card-title v-if="pending == 0">
              No Pending Invitations
           </v-card-title>
-          <v-card-title v-else-if="user.pending_request > 0">
-             {{user.pending_request.length}} Pending Invitations
+          <v-card-title v-else-if="pending > 0">
+             {{pending}} Pending Invitations
           </v-card-title>
         </v-flex>
          <v-flex xs4
          offset-xs1
         >
-           <v-card-title class="blue--text" @click="manageAll">
+           <v-card-title v-if="pending != null" class="blue--text" @click="manageAll">
             Manage All
           </v-card-title>
         </v-flex>
     </v-layout>
     </v-card>
 </v-container>
-
-<v-container mb-5>
-    <v-card class="elevation-6">
+<v-container v-if="data == 0" mt-5 mb-5>
+     <infinite-loading v-show="infinite" direction="bottom" @distance="1" @infinite="infiniteHandler"></infinite-loading>
+</v-container>
+<v-container v-if="data != 0" mb-5>
+    <v-card v-if="data != 0" class="elevation-6">
         <v-card-title>People you may know</v-card-title>
     </v-card>
-    <v-divider></v-divider>
-    <v-card>
+    <v-divider v-if="data != 0"></v-divider>
+    <v-card v-if="data != 0">
     <v-layout row wrap>
         <v-flex xs6
          align-center
         justify-center
         layout
-        fill-height
         text-xs-center
-        v-for="user in user.all" :key="user.id"
+        v-for="(user, index) in data" :key="index"
         >
-          <Suggestion :user="user"></Suggestion>
+          <Suggestion v-on:removesuggest="doSomething" :user="user" :keys="index"></Suggestion>
         </v-flex>
     </v-layout>
     </v-card>
+    <infinite-loading v-show="infinite" direction="bottom" @distance="1" @infinite="infiniteHandler"></infinite-loading>
 </v-container>
-
 </v-app>
 </template>
 <script>
@@ -75,17 +79,27 @@ export default {
      Request
     },
   mounted () {
-    this.fetchAuthenticatedUser()
+      //fetch connects suggestion
+      //fetch number of pending invitations
+      //fetch number of friends
+      //this.fetchSuggestions()
+    //this.fetchAuthenticatedUser()
   },
 
   data () {
     return {
+        infinite: true,
+        page : 1,
     drawer: null,
       disable: false,
       listVideo: false,
       dialog: false,
       info: false,
       infotext: '',
+      data: [],
+      friendscount: null,
+      users: '',
+      pending: null,
       notShown: false,
       avatar: '',
     }
@@ -94,9 +108,9 @@ export default {
       logoutLoadStatus(){
        return this.$store.getters.getLogoutLoadStatus;
      },
-     user(){
-       return this.$store.getters.getUserData;
-     },
+     //user(){
+       //return this.$store.getters.getUserData;
+     //},
    },
 
    watch: {
@@ -123,6 +137,42 @@ export default {
    },
 
   methods: {
+       infiniteHandler($state) {
+        axios.get('/api/suggestions?page='+this.page).then(response =>  {
+                     console.log(response.data);
+                     this.friendscount = response.data.friends_count;
+                     this.pending = response.data.pending_request;
+                      this.users = response.data.user
+                if (response.data.friends_of_friends.last_page > this.page || response.data.suggestions.last_page > this.page) {
+                        this.page += 1;
+                    if (response.data.friends_of_friends.data.length == 0){
+                        this.data.push(...response.data.suggestions.data);
+                    }
+                    else if (response.data.friends_of_friends.data.length < 20) {
+                        let fof = response.data.friends_of_friends.data;
+                        let suggestion = response.data.suggestions.data.slice(0, response.data.friends_of_friends.data.length);
+                        let all = _.concat(fof, suggestion);
+                        this.data.push(...all);
+                    }
+                    else {
+                        this.data.push(...response.data.friends_of_friends.data);
+                    }
+                        $state.loaded();
+                     }else {
+                        this.data.push(...response.data.suggestions.data);
+                        $state.complete();
+                        this.infinite = false;
+                     }
+
+                    //this.page = this.page + 1;
+                }).catch(error => {
+                    //$state.complete();
+                });
+},
+      doSomething(value) {
+          this.data.splice( value, 1 );
+          //console.log(value);
+      },
       viewConnection() {
         this.$router.push('/connects');
       },
@@ -132,16 +182,20 @@ export default {
       addConnect(id){
         this.click = true;
       },
-      dashboard() {
-          this.dialog = true;
-          this.$router.push('/dashboard');
-        },
         logout() {
           this.$store.dispatch( 'logoutUser');
         },
-    fetchAuthenticatedUser() {
-      this.$store.dispatch( 'getUser');
+        fetchSuggestions() {
+
+         axios.get('/api/suggestions').then(response =>  {
+                  this.data = response.data;
+                }).catch(error => {
+
+                });
     },
+    //fetchAuthenticatedUser() {
+      //this.$store.dispatch( 'getUser');
+    //},
   }
 }
 </script>

@@ -57,6 +57,6 @@ class MessageSent implements ShouldBroadcast
         //'order.'.$this->update->order_id
         //$userid = $this->user->id;
         //return new PrivateChannel('message.'.sha1($userid));
-        return new PrivateChannel('message.'.$this->user->id.'.'.$this->receiver->id);
+        return [new PrivateChannel('message.'.$this->user->id.'.'.$this->receiver->id), new PrivateChannel('message.'.$this->receiver->id)];
     }
 }

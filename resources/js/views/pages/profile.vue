@@ -1,5 +1,9 @@
 <template>
-<v-container mb-5>
+<v-app>
+<v-container v-if="user == 0" mt-5 mb-5>
+     <infinite-loading v-show="infinite" direction="bottom" @distance="1" @infinite="infiniteHandler"></infinite-loading>
+</v-container>
+<v-container v-if="user != 0" mt-5 mb-5>
         <v-container>
             <v-layout row wrap>
                 <v-flex xs12 sm8>
@@ -22,7 +26,10 @@
                             color="grey lighten-4"
                             >
                             <img :src="profilePics"
-                            v-if="user.profile && user.profile.avatar"
+                            v-if="user && user.avatar && !preview"
+                            alt="avatar">
+                            <img :src="preview"
+                            v-else-if="preview"
                             alt="avatar">
                             <v-icon
                                 large
@@ -55,24 +62,24 @@
                             layout
                             text-xs-center
                         >
-                            <b><h3>{{ user.profile.first_name + " " + user.profile.last_name }}</h3></b>
+                            <b><h3>{{ user.first_name + " " + user.last_name }}</h3></b>
                         </v-flex>
                         </v-layout>
                         <v-layout>
                              <v-flex
-                            v-if="user.profile && user.profile.headline"
+                            v-if="user && user.headline"
                             xs12
                             align-center
                             justify-center
                             layout
                             text-xs-center
                         >
-                          {{ user.profile.headline}}
+                          {{ user.headline}}
                         </v-flex>
                         </v-layout>
                          <v-layout>
                              <v-flex
-                            v-if="user.profile && user.profile.location"
+                            v-if="user && user.profile && user.profile.location"
                             xs12
                             align-center
                             justify-center
@@ -91,7 +98,7 @@
                             layout
                             text-xs-center
                         >
-                           <v-btn large class="white--text"  href="/editprofile/" :disabled="dialog" :loading="dialog" color="blue">Edit Profile</v-btn>
+                           <v-btn large class="white--text"  @click="editProfile"  :disabled="dialog" :loading="dialog" color="blue">Edit Profile</v-btn>
                         </v-flex>
                         </v-layout>
                     </v-card>
@@ -118,7 +125,7 @@
                             text-xs-center
                         >
                         <v-card-text>
-                          0 Profile Views
+                          {{ user.view }} Profile Views
                         </v-card-text>
                         </v-flex>
                          <v-flex
@@ -129,7 +136,7 @@
                             text-xs-center
                         >
                         <v-card-text>
-                         0 Connections
+                         {{ friends }} Connections
                         </v-card-text>
                         </v-flex>
                         </v-layout>
@@ -138,9 +145,32 @@
             </v-layout>
         </v-container>
 
+        <v-container v-if="user.posts != null">
+             <v-card-text v-if="user.posts != null"><b>Feed HighLights</b></v-card-text>
+            <v-card v-for="post in user.posts"
+                            :key="post.id"
+                     class="elevation-6">
+                 <v-card-text><i>created a post {{post.createdDate}}</i><br/><b>{{post.text.substring(0, 30)}}....</b></v-card-text>
+                 <v-btn align-center class="white--text" @click="showPost(post.id)" color="blue">View Post</v-btn>
+            </v-card>
+        </v-container>
 
-         <v-container v-if="user.experience != 0">
-              <v-card-text v-if="user.experience != 0"><b>Experience and Education</b></v-card-text>
+         <v-container v-if="user && user.accomplishment != null">
+             <v-card-text v-if="user && user.accomplishment != null"><b>Works and Accomplishments</b></v-card-text>
+           <v-card
+                    v-for="accomplishment in user.accomplishment"
+                            :key="accomplishment.id"
+                     class="elevation-6">
+                         <v-card-text><b>{{accomplishment.name}}</b></v-card-text>
+                          <v-card-text>{{accomplishment.description}}</v-card-text>
+                           <v-card-text v-if="accomplishment.certificates">{{accomplishment.certificates}}</v-card-text>
+                            <v-card-text v-if="accomplishment.works">{{accomplishment.works}}</v-card-text>
+                    </v-card>
+        </v-container>
+
+
+         <v-container v-if="user && user.experience != null">
+              <v-card-text v-if="user && user.experience != null"><b>Experience and Education</b></v-card-text>
                     <v-card
                     v-for="experience in user.experience"
                             :key="experience.id"
@@ -174,8 +204,8 @@
         </v-container>
 
 
-        <v-container v-if="user.skill != 0">
-             <v-card-text v-if="user.skill != 0"><b>Skills</b></v-card-text>
+        <v-container v-if="user && user.skill != null">
+             <v-card-text v-if="user && user.skill != null"><b>Skills</b></v-card-text>
             <v-card>
                  <v-chip v-for="skill in user.skill" v-bind:key='skill.id'>
                      <v-avatar class="blue">{{ skill.description.slice(0,1) }}</v-avatar>
@@ -184,8 +214,8 @@
             </v-card>
         </v-container>
 
-         <v-container v-if="user.accomplishment != 0">
-             <v-card-text v-if="user.accomplishment != 0"><b>Works and Accomplishments</b></v-card-text>
+         <v-container v-if="user && user.accomplishment != null">
+             <v-card-text v-if="user && user.accomplishment != null"><b>Works and Accomplishments</b></v-card-text>
            <v-card
                     v-for="accomplishment in user.accomplishment"
                             :key="accomplishment.id"
@@ -197,14 +227,14 @@
                     </v-card>
         </v-container>
 
-            <v-container v-if="user.skill != 0">
+            <v-container>
              <v-expansion-panel>
     <v-expansion-panel-content
     >
       <div slot="header">Contacts</div>
 
         <v-list two-line>
-          <v-list-tile>
+          <v-list-tile v-if="user && user.profile && user.profile.phone">
             <v-list-tile-action>
               <v-icon color="blue">phone</v-icon>
             </v-list-tile-action>
@@ -215,9 +245,9 @@
             </v-list-tile-content>
           </v-list-tile>
 
-          <v-divider inset></v-divider>
+          <v-divider v-if="user.profile && user.profile.phone" inset></v-divider>
 
-          <v-list-tile>
+          <v-list-tile v-if="user && user.profile && user.profile.email">
             <v-list-tile-action>
               <v-icon color="blue">mail</v-icon>
             </v-list-tile-action>
@@ -230,7 +260,7 @@
 
           <v-divider inset></v-divider>
 
-           <v-list-tile v-if="user.profile && user.profile.linkedin_profile">
+           <v-list-tile v-if="user && user.profile && user.profile.linkedin_profile">
             <v-list-tile-action>
               <v-icon color="blue">chat</v-icon>
             </v-list-tile-action>
@@ -286,16 +316,21 @@
      </v-card-text>
 
   </v-container>
+</v-app>
 </template>
 <script>
 export default {
   mounted () {
-    this.fetchAuthenticatedUser()
+    //this.fetchAuthenticatedUser()
   },
 
   data () {
     return {
+        preview: '',
+        user: [],
+        friends: '',
     drawer: null,
+    infinite: true,
       disable: false,
       listVideo: false,
       dialog: false,
@@ -316,18 +351,15 @@ export default {
       logoutLoadStatus(){
        return this.$store.getters.getLogoutLoadStatus;
      },
-     user(){
-       return this.$store.getters.getUserData;
-     },
 
      updateAvatarStatus(){
        return this.$store.getters.getUpdateAvatarStatus;
      },
 
      profilePics(){
-         const user =this.$store.getters.getUserData;
-        if (user.profile && user.profile.avatar){
-       return 'http://rubix.site/images/users/' + this.user.profile.avatar;
+         const user =this.user;
+        if (user && user.avatar){
+       return 'http://rubix.site/images/users/' + user.avatar;
         }
      }
 
@@ -372,6 +404,13 @@ export default {
    },
 
   methods: {
+      showPost(data){
+           this.$router.push(`/post/${data}`);
+           console.log('go to post page');
+       },
+      editProfile() {
+      this.$router.push('/editprofile')
+      },
       dashboard() {
           this.dialog = true;
           this.$router.push('/dashboard');
@@ -379,6 +418,19 @@ export default {
         logout() {
           this.$store.dispatch( 'logoutUser');
         },
+        infiniteHandler($state) {
+      axios.get('/api/auth/user').then(response =>  {
+                     console.log(response.data);
+                  this.user = response.data.user;
+                  this.friends = response.data.friends_count;
+
+                        $state.complete();
+                        this.infinite = false;
+
+                }).catch(error => {
+                    //$state.complete();
+                });
+    },
     fetchAuthenticatedUser() {
       this.$store.dispatch( 'getUser');
     },
@@ -389,14 +441,18 @@ export default {
 
     handleFileUpload() {
       this.avatar = this.$refs.file.files[0];
+      this.preview = URL.createObjectURL(this.avatar);
       let formData = new FormData();
       let avatar = this.avatar;
       formData.append('avatar', avatar);
-      this.$store.dispatch( 'updateAvatar',
-       {
-         formData
-       }
-     );
+      const config = {
+      headers: {'content-type': 'multipart/form-data'}
+    }
+      axios.post('/api/user/update-avatar', formData, config ).then(response =>  {
+                     console.log(response.data);
+                }).catch(error => {
+                   this.preview = '';
+                });
     },
   }
 }

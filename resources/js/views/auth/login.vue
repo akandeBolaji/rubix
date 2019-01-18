@@ -39,7 +39,7 @@
                 <v-form>
                   <v-text-field prepend-icon="person" v-validate="'required|email'" v-model="loginForm.email" name="Email" label="Email" type="text"></v-text-field>
                   <span :value="errors.has('Email')" style="color:red">{{ errors.first('Email') }}</span>
-                  <v-text-field id="password"  v-validate="'required|min:6'" prepend-icon="lock" v-model="loginForm.password" name="password" label="Password" type="password"></v-text-field>
+                  <v-text-field id="password" :append-icon="show1 ? 'visibility_off' : 'visibility'" :type="show1 ? 'text' : 'password'"  v-validate="'required|min:6'" prepend-icon="lock" v-model="loginForm.password" name="password" label="Password" @click:append="show1 = !show1"></v-text-field>
                   <span :value="errors.has('password')" style="color:red">{{ errors.first('password') }}</span>
                 </v-form>
               </v-card-text>
@@ -116,6 +116,7 @@
     data() {
         return {
       infotext: '',
+      show1: false,
       info: false,
       dialog: false,
       drawer: null,

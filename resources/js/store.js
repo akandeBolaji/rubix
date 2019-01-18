@@ -12,6 +12,7 @@ Vue.use( Vuex )
 import { auth } from './modules/auth.js'
 import { user } from './modules/user.js'
 import { feeds } from './modules/feeds.js'
+import { networks } from './modules/networks.js'
 
 /*
   Exports our data store.
@@ -20,6 +21,7 @@ export default new Vuex.Store({
   modules: {
    auth,
    user,
-   feeds
+   feeds,
+   networks
   }
 });

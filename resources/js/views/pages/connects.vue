@@ -17,11 +17,11 @@
               >account_circle</v-icon>
           </v-flex>
           <v-flex xs6>
-             <v-card-text><b>{{user.full_name}}</b><br/>Web Developer</v-card-text>
+             <v-card-text><b>{{user.first_name + " " + user.last_name}}</b><br/>{{user.headline}}</v-card-text>
           </v-flex>
           <v-flex align-center justify-center layout text-xs-center xs4>
         <v-btn fab small flat color="green" outline class="white--text" :loading="click" :disabled="click" @click="messageConnect(user.id)"><v-icon >message</v-icon></v-btn>
-           <v-btn fab small flat color="red" outline class="white--text" :loading="clicks" :disabled="clicks" @click="confirmRemove(user.full_name)"><v-icon >cancel</v-icon></v-btn>
+           <v-btn fab small flat color="red" outline class="white--text" :loading="clicks" :disabled="clicks" @click="confirmRemove(user.first_name, user.last_name)"><v-icon >cancel</v-icon></v-btn>
           </v-flex>
           <v-divider></v-divider>
                <v-dialog
@@ -52,8 +52,11 @@ export default {
     }
   },
   methods: {
-      confirmRemove(name){
-         this.infotext = "Are you sure you want to remove" + " " + name + " " + "from your connections ?";
+       userPic(data){
+         return 'http://rubix.site/images/users/' + data;
+     },
+      confirmRemove(name, last){
+         this.infotext = "Are you sure you want to remove" + " " + name + " " + last + " " + "from your connections ?";
         this.info = true;
       },
       removeConnect(id){

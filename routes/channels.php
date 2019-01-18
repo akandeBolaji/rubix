@@ -26,6 +26,38 @@ Broadcast::channel('message.{id}.{user}', function ($user, $id) {
     return true;
 });
 
+Broadcast::channel('chat-room.{id}', function ($user) {
+    return ['id' => $user->id, 'name' => $user->first_name];
+});
+
 Broadcast::channel('messag.{id}.{user}', function ($user, $id) {
+    return true;
+});
+
+Broadcast::channel('message.{id}', function ($id) {
+    return true;
+});
+
+Broadcast::channel('post.{id}', function ($user) {
+    return true;
+});
+
+Broadcast::channel('comment.{id}', function ($user) {
+    return true;
+});
+
+Broadcast::channel('postcomment.{id}', function ($user) {
+    return true;
+});
+
+Broadcast::channel('like.{id}', function ($user) {
+    return true;
+});
+
+Broadcast::channel('postlike.{id}', function ($user) {
+    return true;
+});
+
+Broadcast::channel('messag.{id}', function ($id) {
     return true;
 });

@@ -1,195 +1,217 @@
 <template>
-<f7-page>
-  <f7-navbar class="elevation-5">
-      <f7-nav-left></f7-nav-left>
-      <f7-nav-title>Edit Profile</f7-nav-title>
-  </f7-navbar>
-    <f7-list no-hairlines-md>
-       <f7-block-title>General Profile</f7-block-title>
-       <f7-list-item>
-        <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-        <f7-label>Career summary</f7-label>
-        <f7-input v-if="userData.profile.headline" type="text" :placeholder="userData.profile.headline" @input="profile.headline = $event.target.value"></f7-input>
-        <f7-input v-else type="text" placeholder="What you do" @input="profile.headline = $event.target.value"></f7-input>
-      </f7-list-item>
+  <v-app id="inspire">
+   <v-toolbar fixed color="blue lighten-1">
+        <v-icon @click="goBack" dark>arrow_back</v-icon>
+        <v-toolbar-title class="white--text" >Edit Profile</v-toolbar-title>
+    </v-toolbar>
+      <v-container mt-5 fluid fill-height>
+        <v-layout align-center justify-center>
+          <v-flex xs12 sm8 md4>
+            <v-card class="elevation-12">
+              <v-toolbar dark color="blue">
+                <v-toolbar-title >Edit Profile</v-toolbar-title>
+              </v-toolbar>
+              <v-card-text>
+                <v-form>
+                  <v-card-text><b>General Profile</b></v-card-text>
+                  <v-text-field v-if="userData && userData.headline" prepend-icon="work"  v-model="profile.headline" name="headline" :placeholder="userData.headline" label="Career Summary" type="text"></v-text-field>
+                  <v-text-field v-else prepend-icon="work" v-model="profile.headline" data-vv-scope="profile" v-validate="'required|min:2'"  name="headline" label="Career Summary" type="text"></v-text-field>
+                  <span :value="errors.has('profile.headline')" style="color:red">{{ errors.first('profile.headline') }}</span>
+                  <v-text-field v-if="userData.profile && userData.profile.phone" prepend-icon="phone" :placeholder="userData.profile.phone" v-model="profile.phone" name="phone" label="Your Phone number" type="text"></v-text-field>
+                  <v-text-field v-else prepend-icon="phone" data-vv-scope="profile" v-validate="'required|numeric'" v-model="profile.phone" name="phone" label="Your Phone number" type="text"></v-text-field>
+                  <span :value="errors.has('profile.phone')"  style="color:red">{{ errors.first('profile.phone') }}</span>
+                  <v-text-field v-if="userData.profile && userData.profile.location" prepend-icon="location_city" v-model="profile.location" :placeholder="userData.profile.location" name="Location" label="Location" type="text"></v-text-field>
+                  <v-text-field v-else prepend-icon="location_city" data-vv-scope="profile" v-validate="'required'" v-model="profile.location" name="Location" label="Location" type="text"></v-text-field>
+                  <span :value="errors.has('profile.Location')" style="color:red">{{ errors.first('profile.Location') }}</span>
+                  <v-text-field v-if="userData.profile && userData.profile.facebook_profile" prepend-icon="chat" :placeholder="userData.profile.facebook_profile" v-model="profile.facebook_profile"  label="Facebook Profile" name="Facebook Profile" type="text"></v-text-field>
+                  <v-text-field v-else prepend-icon="chat" v-model="profile.facebook_profile"  label="Facebook Profile" name="Facebook Profile" type="text"></v-text-field>
+                  <v-text-field v-if="userData.profile && userData.profile.linkedin_profile" prepend-icon="people" :placeholder="userData.profile.linkedin_profile" label="Linkedin Profile" v-model="profile.linkedin_profile"  name="Linkedin Profile" type="text" ></v-text-field>
+                  <v-text-field v-else prepend-icon="people" label="Linkedin Profile" v-model="profile.linkedin_profile"  name="Linkedin Profile" type="text" ></v-text-field>
+                  <v-text-field v-if="userData.profile && userData.profile.twitter_profile" prepend-icon="chat_bubble" :placeholder="userData.profile.twitter_profile" name="Twitter Profile" v-model="profile.twitter_profile" label="Twitter Profile" type="text"></v-text-field>
+                  <v-text-field v-else prepend-icon="chat_bubble" name="Twitter Profile" v-model="profile.twitter_profile" label="Twitter Profile" type="text"></v-text-field>
 
-      <f7-list-item>
-        <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-        <f7-label>Phone</f7-label>
-         <f7-input v-if="userData.profile.phone" type="tel" :placeholder="userData.profile.phone" @input="profile.phone = $event.target.value"></f7-input>
-        <f7-input v-else type="tel" placeholder="Your phone number" @input="profile.phone = $event.target.value" clear-button></f7-input>
-      </f7-list-item>
+                  <v-divider></v-divider>
 
-      <f7-list-item>
-        <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-        <f7-label>Location</f7-label>
-        <f7-input v-if="userData.profile.location" type="text" :placeholder="userData.profile.location" @input="profile.location = $event.target.value"></f7-input>
-        <f7-input v-else type="text" placeholder="Your Location" @input="profile.location = $event.target.value" clear-button></f7-input>
-      </f7-list-item>
+                    <v-card-text v-if="userData.skill != null && userData.skill != 0"><b>Existing Skills</b></v-card-text>
+                    <v-chip small v-for="(skill) in userData.skill" v-bind:key='skill.id'>
+                     <v-avatar :class="getRandomColor">{{skill.description.slice(0,1)}}</v-avatar>
+                     {{skill.description}}
+                     <v-icon  @click="deleteSkill( skill.id )" color="red" right>close</v-icon>
+                   </v-chip>
 
-      <f7-list-item>
-        <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-        <f7-label>Facebook Profile</f7-label>
-        <f7-input v-if="userData.profile.facebook_profile" type="text" :placeholder="userData.profile.facebook_profile" @input="profile.facebook_profile = $event.target.value"></f7-input>
-        <f7-input v-else type="text" placeholder="Your facebook username" @input="profile.facebook_profile = $event.target.value"></f7-input>
-      </f7-list-item>
+                   <v-divider></v-divider>
 
-      <f7-list-item>
-        <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-        <f7-label>Linkedin Profile</f7-label>
-        <f7-input v-if="userData.profile.linkedin_profile" type="text" :placeholder="userData.profile.linkedin_profile" @input="profile.linkedin_profile = $event.target.value"></f7-input>
-        <f7-input v-else type="text" placeholder="Your Linkedin Url" @input="profile.linkedin_profile = $event.target.value"></f7-input>
-      </f7-list-item>
+                   <v-card-text v-show="skillFalse"><b>New Skills</b></v-card-text>
+                   <v-chip small v-for="(skill, key) in skills" v-bind:key='skill'>
+                     <v-avatar :class="getRandomColor">{{skill.slice(0,1)}}</v-avatar>
+                     {{skill}}
+                     <v-icon  @click="removeSkill( key )" color="red" right>close</v-icon>
+                   </v-chip>
+                   <v-card-text><b>Add Skills</b></v-card-text>
+                   <v-text-field prepend-icon="work"  data-vv-scope="skill" v-validate="'required|min:3'" v-model="skill" name="skill" label="Add skill" type="text"></v-text-field>
+                  <v-btn @click="addSkill" class="white--text" color="blue">Add Skill</v-btn>
 
-      <f7-list-item>
-        <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-        <f7-label>Google Plus Profile</f7-label>
-        <f7-input v-if="userData.profile.google_plus_profile" type="text" :placeholder="userData.profile.google_plus_profile" @input="profile.google_plus_profile = $event.target.value"></f7-input>
-        <f7-input v-else type="text" placeholder="Your Google Plus Username" @input="profile.google_plus_profile = $event.target.value"></f7-input>
-      </f7-list-item>
+                  <v-divider></v-divider>
 
-      <f7-list-item>
-        <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-        <f7-label>Twitter Profile</f7-label>
-         <f7-input v-if="userData.profile.twitter_profile" type="text" :placeholder="userData.profile.twitter_profile" @input="profile.twitter_profile = $event.target.value"></f7-input>
-        <f7-input v-else type="text" placeholder="Your twitter username" @input="profile.twitter_profile = $event.target.value"></f7-input>
-      </f7-list-item>
+                  <v-card-text v-if="userData.experience != null && userData.experience != 0"><b>Existing Experience</b></v-card-text>
+                   <v-list dense v-for="(experience) in userData.experience" v-bind:key='experience.id'>
+                    <v-list-tile class="grey lighten-3">
+                    <v-list-tile-content>Name of Organisation:</v-list-tile-content>
+                    <v-list-tile-content class="align-end">{{ experience.name }}</v-list-tile-content>
+                    </v-list-tile>
+                    <v-list-tile>
+                    <v-list-tile-content>Location of Organisation:</v-list-tile-content>
+                    <v-list-tile-content class="align-end">{{ experience.location }}</v-list-tile-content>
+                    </v-list-tile>
+                    <v-list-tile class="grey lighten-3">
+                    <v-list-tile-content>Start Date - End Date:</v-list-tile-content>
+                    <v-list-tile-content class="align-end"> {{ experience.start_date }} - {{ experience.end_date }}</v-list-tile-content>
+                    </v-list-tile>
+                    <v-btn @click="deleteExperience( experience.id )" class="white--text" color="blue">Delete Experience</v-btn>
+                   </v-list>
 
-      <f7-list-item>
-        <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-        <f7-label>Gender</f7-label>
-         <f7-input v-if="userData.profile.gender" type="select" :value="userData.profile.gender" @input="profile.gender = $event.target.value">
-          <option value="Male">Male</option>
-          <option value="Female">Female</option>
-        </f7-input>
-        <f7-input v-else type="select" value="Male" @input="profile.gender = $event.target.value">
-          <option value="Male">Male</option>
-          <option value="Female">Female</option>
-        </f7-input>
-      </f7-list-item>
+                   <v-divider></v-divider>
 
-      <f7-list-item>
-        <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-        <f7-label>Date of Birth</f7-label>
-        <f7-input v-if="userData.profile.date_of_birth" type="text"  :placeholder="userData.profile.date_of_birth" @input="profile.date_of_birth = $event.target.value"></f7-input>
-        <f7-input v-else type="date"  placeholder="Please choose..." @input="profile.date_of_birth = $event.target.value"></f7-input>
-      </f7-list-item>
-    </f7-list>
+                  <v-card-text v-show="experienceFalse"><b>New Experience</b></v-card-text>
+                   <v-list dense v-for="(experience, key) in experiences" v-bind:key='experience.name'>
+                    <v-list-tile class="grey lighten-3">
+                    <v-list-tile-content>Name of Organisation:</v-list-tile-content>
+                    <v-list-tile-content class="align-end">{{ experience.name }}</v-list-tile-content>
+                    </v-list-tile>
+                    <v-list-tile>
+                    <v-list-tile-content>Location of Organisation:</v-list-tile-content>
+                    <v-list-tile-content class="align-end">{{ experience.location }}</v-list-tile-content>
+                    </v-list-tile>
+                    <v-list-tile class="grey lighten-3">
+                    <v-list-tile-content>Start Date - End Date:</v-list-tile-content>
+                    <v-list-tile-content class="align-end"> {{ experience.start_date }} - {{ experience.end_date }}</v-list-tile-content>
+                    </v-list-tile>
+                    <v-btn @click="removeExperience( key )" class="white--text" color="blue">Remove Experience</v-btn>
+                   </v-list>
 
-    <f7-block-title v-if="userData.skill[0]">Existing Skills</f7-block-title>
-    <f7-chip deleteable @click="deleteSkill( skill.id )" media-text-color="white" :media="skill.description.slice(0,1)" :media-bg-color="getRandomColor" v-for="(skill) in userData.skill" v-bind:key='skill.id' :text="skill.description"></f7-chip>
+                   <v-card-text><b>Add Experience</b></v-card-text>
+                   <v-text-field prepend-icon="people" data-vv-scope="experience" v-validate="'required|min:3'" v-model="experience.name" name="Name of Organisation" label="Name of Organisation" type="text"></v-text-field>
+                  <v-text-field prepend-icon="location_city" data-vv-scope="experience" v-validate="'required|min:3'" v-model="experience.location" name="Location of Organisation" label="Location of Organisation" type="text"></v-text-field>
+                  <v-text-field prepend-icon="info" data-vv-scope="experience" v-validate="'required|min:3'" v-model="experience.start_date" name="Start Date" label="Start Date" type="text"></v-text-field>
+                  <v-text-field prepend-icon="info" data-vv-scope="experience" v-validate="'required|min:3'" v-model="experience.end_date" name="End Date" label="End Date" type="text"></v-text-field>
+                  <v-btn @click="addExperience" class="white--text" color="blue">Add Experience</v-btn>
 
-    <f7-block-title v-show="skillFalse">New Skills</f7-block-title>
-    <f7-chip deleteable @click="removeSkill( key )" media-text-color="white" :media="skill.slice(0,1)" :media-bg-color="getRandomColor" v-for="(skill, key) in skills" v-bind:key='skill' :text="skill"></f7-chip>
+                  <v-divider></v-divider>
 
-    <f7-list>
-      <f7-block-title>Add Skills</f7-block-title>
-       <f7-list-item>
-        <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-        <input type="text" placeholder="Add skill" name="skill" v-model="skill" v-validate="'required|min:3'">
-      </f7-list-item>
-      <f7-button fill @click="addSkill">Add Skill</f7-button>
-      </f7-list>
+                  <v-card-text v-if="userData.accomplishment != 0 && userData.accomplishment != null"><b>Existing Work and Accomplishment</b></v-card-text>
+                   <v-list dense v-for="(accomplishment) in userData.accomplishment" v-bind:key='accomplishment.id'>
+                    <v-list-tile class="grey lighten-3">
+                    <v-list-tile-content>Accomplishment:</v-list-tile-content>
+                    <v-list-tile-content class="align-end">{{ accomplishment.name }}</v-list-tile-content>
+                    </v-list-tile>
+                    <v-card-text>Description</v-card-text>
+                    <v-list-tile>
+                    <v-list-tile-content>{{ accomplishment.description }}</v-list-tile-content>
+                    </v-list-tile>
+                    <v-list-tile v-if="accomplishment.certificates||accomplishment.links" class="grey lighten-3">
+                    <v-list-tile-content>Links to certificates and works:</v-list-tile-content>
+                    <v-list-tile-content class="align-end"> {{ accomplishment.certificates }}<br/> {{ accomplishment.links }}<br/></v-list-tile-content>
+                    </v-list-tile>
+                    <v-btn @click="deleteAccomplishment( accomplishment.id )" class="white--text" color="blue">Delete Accomplishment</v-btn>
+                   </v-list>
+                    <v-divider></v-divider>
 
-   <f7-block-title v-if="userData.experience[0]">Existing Experience</f7-block-title>
-      <f7-block strong v-for="(experience) in userData.experience" v-bind:key='experience.id'>
-        <b>Name of Organisation</b><br/>
-        {{ experience.name }}<br/>
-        <b>Location of Organisation</b><br/>
-        {{ experience.location }}<br/>
-        <b>Start Date - End Date</b><br/>
-        {{ experience.start_date }} - {{ experience.end_date }}<br/>
-        <f7-button fill @click="deleteExperience( experience.id )">Delete Experience</f7-button>
-      </f7-block>
+                  <v-card-text v-show="accomplishmentFalse"><b>New Work and Accomplishment</b></v-card-text>
+                   <v-list dense v-for="(accomplishment, key) in accomplishments" v-bind:key='accomplishment.name'>
+                   <v-list-tile class="grey lighten-3">
+                    <v-list-tile-content>Accomplishment:</v-list-tile-content>
+                    <v-list-tile-content class="align-end">{{ accomplishment.name }}</v-list-tile-content>
+                    </v-list-tile>
+                   <v-card-text>Description</v-card-text>
+                    <v-list-tile>
+                    <v-list-tile-content>{{ accomplishment.description }}</v-list-tile-content>
+                    </v-list-tile>
+                    <v-list-tile v-if="accomplishment.certificates||accomplishment.links" class="grey lighten-3">
+                    <v-list-tile-content>Links to certificates and works:</v-list-tile-content>
+                    <v-list-tile-content class="align-end"> {{ accomplishment.certificates }}<br/> {{ accomplishment.links }}<br/></v-list-tile-content>
+                    </v-list-tile>
+                    <v-btn @click="removeAccomplishment( key )" class="white--text" color="blue">Remove Accomplishment</v-btn>
+                   </v-list>
 
-   <f7-block-title v-show="experienceFalse">New Experience</f7-block-title>
-      <f7-block strong v-for="(experience, key) in experiences" v-bind:key='experience.name'>
-        <b>Name of Organisation</b><br/>
-        {{ experience.name }}<br/>
-        <b>Location of Organisation</b><br/>
-        {{ experience.location }}<br/>
-        <b>Start Date - End Date</b><br/>
-        {{ experience.start_date }} - {{ experience.end_date }}<br/>
-        <f7-button fill @click="removeExperience( key )">Remove Experience</f7-button>
-      </f7-block>
+                   <v-card-text><b>Add Works and Accomplishments</b></v-card-text>
+                   <v-text-field prepend-icon="info" data-vv-scope="work" v-validate="'required|min:3'" v-model="accomplishment.name" name="Name" label="Name of Accomplishment" type="text"></v-text-field>
+                  <v-textarea prepend-icon="info" data-vv-scope="work" v-validate="'required|min:3'" v-model="accomplishment.description" name="Description" label="Description" type="text"></v-textarea>
+                  <v-text-field prepend-icon="info"  v-model="accomplishment.certificates" name="First Name" label="Link to certificate (optional)" type="text"></v-text-field>
+                  <v-text-field prepend-icon="info" v-model="accomplishment.links" name="First Name" label="Link to works (optional)" type="text"></v-text-field>
+                  <v-btn @click="addAccomplishment" class="white--text" color="blue">Add</v-btn>
+                </v-form>
+              </v-card-text>
+              <v-card-actions>
+                  <v-spacer></v-spacer>
+                <v-btn type="submit" class="white--text" @click="editProfile" :disabled="dialog" :loading="dialog" color="blue">Update Profile</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-flex>
+        </v-layout>
+      </v-container>
+      <v-footer height="auto" color="blue">
+           <v-layout
+      justify-center
+      row
+      wrap
+    >
+           <v-flex
+        grey
+        lighten-2
+        py-3
+        text-xs-center
+        blue--text
+        xs12
+      >
+        &copy;2018 — <strong>Rubix</strong>
+      </v-flex>
+      </v-layout>
+      </v-footer>
+      <v-dialog
+      v-model="dialog"
+      hide-overlay
+      persistent
+      width="300"
+    >
+      <v-card
+        color="blue"
+        dark
+      >
+        <v-card-text>
+          Please wait...
+          <v-progress-linear
+            indeterminate
+            color="white"
+            class="mb-0"
+          ></v-progress-linear>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
 
-    <f7-list>
-      <f7-block-title>Add Experience</f7-block-title>
-       <f7-list-item>
-        <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-        <input type="text" placeholder="Name of Organisation" v-model="experience.name">
-       </f7-list-item>
-       <f7-list-item>
-        <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-        <input type="text" placeholder="Location of Organisation" v-model="experience.location">
-       </f7-list-item>
-       <f7-list-item>
-        <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-        <input type="text" placeholder="Start Date" v-model="experience.start_date">
-       </f7-list-item>
-       <f7-list-item>
-        <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-        <input type="text" placeholder="End Date" v-model="experience.end_date">
-       </f7-list-item>
-      <f7-button fill @click="addExperience">Add Experience</f7-button>
-      </f7-list>
-
-      <f7-block-title v-if="userData.accomplishment[0]">Existing Work and Accomplishment</f7-block-title>
-      <f7-block strong v-for="(accomplishment) in userData.accomplishment" v-bind:key='accomplishment.id'>
-        <b>Accomplishment</b><br/>
-        {{ accomplishment.name }}<br/>
-        <b>Description</b><br/>
-        {{ accomplishment.description }}<br/>
-        <p v-if="accomplishment.certificates||accomplishment.links">
-        <b>Links to certificates and works</b><br/>
-        {{ accomplishment.certificates }}<br/> {{ accomplishment.links }}<br/>
-        </p>
-        <f7-button fill @click="deleteAccomplishment( accomplishment.id )">Delete Accomplishment</f7-button>
-      </f7-block>
-
-      <f7-block-title v-show="accomplishmentFalse">New Work and Accomplishment</f7-block-title>
-      <f7-block strong v-for="(accomplishment, key) in accomplishments" v-bind:key='accomplishment.name'>
-        <b>Accomplishment</b><br/>
-        {{ accomplishment.name }}<br/>
-        <b>Description</b><br/>
-        {{ accomplishment.description }}<br/>
-        <p v-if="accomplishment.certificates||accomplishment.links">
-        <b>Links to certificates and works</b><br/>
-        {{ accomplishment.certificates }}<br/> {{ accomplishment.links }}<br/>
-        </p>
-        <f7-button fill @click="removeAccomplishment( key )">Remove Accomplishment</f7-button>
-      </f7-block>
-
-     <f7-list>
-      <f7-block-title>Add Works and Accomplishments</f7-block-title>
-       <f7-list-item>
-        <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-        <input type="text" placeholder="Name of Accomplishment" v-model="accomplishment.name">
-       </f7-list-item>
-       <f7-list-item>
-        <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-        <input type="text" placeholder="Description" v-model="accomplishment.description">
-       </f7-list-item>
-       <f7-list-item>
-        <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-        <input type="text" placeholder=" Link to certificate (optional)" v-model="accomplishment.certificates">
-       </f7-list-item>
-       <f7-list-item>
-        <f7-icon icon="demo-list-icon" slot="media"></f7-icon>
-        <input type="text" placeholder=" Link to works (optional)" v-model="accomplishment.links">
-       </f7-list-item>
-      <f7-button fill @click="addAccomplishment">Add</f7-button>
-      </f7-list>
-
-      <f7-button big fill raised @click="editProfile">Update Profile</f7-button>
-</f7-page>
+    <v-dialog
+      v-model="info"
+      max-width="290"
+    >
+     <v-card>
+        <v-card-title class="headline">{{this.infotext}}</v-card-title>
+        <div>
+        <v-spacer></v-spacer>
+        <v-btn color="blue" @click="info = false">OK</v-btn>
+        </div>
+     </v-card>
+    </v-dialog>
+  </v-app>
 </template>
 
 <script>
 export default {
   data() {
     return {
-
+      drawer: null,
+      disable: false,
+      dialog: false,
+      info: false,
+      infotext: '',
       skillFalse: false,
       experienceFalse: false,
       accomplishmentFalse: false,
@@ -226,14 +248,37 @@ export default {
     }
   },
 
+  created () {
+    this.fetchData()
+  },
+
   methods: {
+       goBack(){
+                this.$router.push('/profile');
+            },
+      dashboard() {
+          this.dialog = true;
+          this.$router.push('/dashboard');
+        },
+        logout() {
+          this.$store.dispatch( 'logoutUser');
+        },
+    fetchData() {
+         this.$store.dispatch( 'getUser');
+       },
     addSkill() {
-      if (this.skill) {
+      this.$validator.validateAll('skill').then(result => {
+        if (result) {
         this.skills.push(this.skill);
         this.skill = '';
         this.skillFalse = true;
         console.log(this.skills);
-        }
+       }
+       else {
+          this.infotext = "Please fill field with a minimum of 3 characters";
+          this.info = true;
+      }
+      })
     },
     removeSkill(key) {
       this.skills.splice( key, 1 );
@@ -242,12 +287,18 @@ export default {
       }
     },
     addExperience() {
-      if (this.experience.name && this.experience.location && this.experience.start_date && this.experience.end_date) {
+      this.$validator.validateAll('experience').then(result => {
+        if (result) {
         this.experiences.push(this.experience);
         this.experience = {};
         this.experienceFalse = true;
         console.log(this.experiences);
       }
+       else {
+          this.infotext = "Please fill all fields with a minimum of 3 characters";
+          this.info = true;
+      }
+      })
     },
     removeExperience(key) {
       this.experiences.splice( key, 1 );
@@ -257,12 +308,18 @@ export default {
     },
 
     addAccomplishment() {
-      if (this.accomplishment.name && this.accomplishment.description) {
+      this.$validator.validateAll('work').then(result => {
+        if (result) {
         this.accomplishments.push(this.accomplishment);
         this.accomplishment = {};
         this.accomplishmentFalse = true;
         console.log(this.accomplishments);
       }
+      else {
+          this.infotext = "Please fill name and description fields with a minimum of 3 characters";
+          this.info = true;
+      }
+      })
     },
 
     removeAccomplishment(key) {
@@ -273,6 +330,9 @@ export default {
     },
 
     editProfile() {
+        if (this.experiences != 0 || this.skills != 0 || this.accomplishments != 0 || this.profile.headline != 0 || this.profile.location != 0 || this.profile.phone != 0 || this.profile.twitter_profile != 0 || this.profile.facebook_profile != 0 || this.profile.linkedin_profile != 0){
+         this.$validator.validateAll('profile').then(result => {
+            if (result) {
       let profileData;
       let experienceData;
       let skillData;
@@ -289,7 +349,15 @@ export default {
                accomplishmentData
                }
                );
-    },
+            }
+         })
+
+    } else {
+        this.infotext = "You did not make any update";
+          this.info = true;
+    }
+    }
+    ,
 
     deleteSkill( key ) {
       console.log(key);
@@ -323,19 +391,52 @@ export default {
     watch: {
       'editProfileStatus': function(){
          if(this.editProfileStatus == 2){
-          this.$f7router.navigate("/profiletab/");
-          //  app.dialog.alert(this.$store.getters.getEditProfileMessage);
-           // app.dialog.close();
+          //this.$router.push("/profiletab");
+          this.dialog = false;
+           this.infotext = this.$store.getters.getEditProfileMessage
+           this.info = true;
          }
-      }
-        // else if (this.editProfileStatus == 3){
-          // app.dialog.close();
-          // app.dialog.alert(this.$store.getters.getEditProfileMessage);
-        // }
-        // else if (this.editProfileStatus == 1){
-          // app.dialog.preloader();
-         //}
-      // }
+
+        else if (this.editProfileStatus == 3){
+             this.dialog = false;
+            this.infotext = this.$store.getters.getEditProfileMessage
+           this.info = true;
+         }
+         else if (this.editProfileStatus == 1){
+           this.dialog = true;
+         }
+       },
+        'userLoadStatus': function(){
+         if(this.userLoadStatus == 2){
+             this.dialog = false;
+         }
+         else if (this.userLoadStatus == 3){
+           this.$router.go();
+         }
+         else if (this.userLoadStatus == 1){
+           this.dialog = true;
+         }
+       },
+       'logoutLoadStatus': function(){
+         if(this.logoutLoadStatus == 2){
+           this.dialog = false;
+           this.$router.push("/login");
+         }
+         else if (this.logoutLoadStatus == 3){
+           this.dialog = false;
+            if (this.$store.getters.getLogoutMessage) {
+           this.infotext = this.$store.getters.getLogoutMessage
+           this.info = true;
+           }
+           else {
+             this.infotext = 'An error Occured. Please check your network';
+             this.info = true;
+           };
+         }
+         else if (this.logoutLoadStatus == 1){
+           this.dialog = true;
+         }
+       }
    },
 
     computed: {
@@ -353,7 +454,13 @@ export default {
         ];
         var randomColor = Math.floor(Math.random() * 6);
         return colorArray[randomColor];
-      }
+      },
+       userLoadStatus(){
+       return this.$store.getters.getUserStatus;
+     },
+     logoutLoadStatus(){
+       return this.$store.getters.getLogoutLoadStatus;
+     }
     }
 }
 </script>

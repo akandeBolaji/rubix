@@ -7,6 +7,9 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Hootlex\Friendships\Traits\Friendable;
+use JWTAuth;
+use Tymon\JWTAuth\Exceptions\JWTException;
+
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -19,7 +22,7 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $fillable = [
-        'name', 'ip', 'email', 'password', 'phone', 'status'
+        'first_name', 'last_name', 'ip', 'email', 'password', 'phone', 'status', 'last_seen'
     ];
 
     /**
@@ -30,6 +33,12 @@ class User extends Authenticatable implements JWTSubject
     protected $hidden = [
         'password', 'remember_token', 'activation_token', 'ip', 'phone', 'email', 'status', 'provider', 'provider_unique_id'
     ];
+    protected $appends = ['mutualcounts'];
+
+    public function getMutualCountsAttribute()
+    {
+        return $this->getMutualFriendsCount(JWTAuth::parseToken()->authenticate());
+    }
 
     public function getJWTIdentifier()
     {
