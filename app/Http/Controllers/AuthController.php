@@ -74,7 +74,14 @@ class AuthController extends Controller
             return response()->json(['authenticated' => false],422);
         }
         $user = JWTAuth::parseToken()->authenticate()->id;
-        return response()->json($user, 201);
+        $threads = Talk::user(auth()->user()->id)->threads();
+        $unread = 0;
+        if ($threads){
+            foreach($threads as $thread) {
+                $unread = $unread + $thread->unread;
+            }
+        }
+        return response()->json(compact('user', 'unread'), 201);
     }
 
     public function check()

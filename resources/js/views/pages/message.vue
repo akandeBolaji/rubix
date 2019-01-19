@@ -12,7 +12,7 @@
             </v-avatar>
             <v-icon
               large
-              style="font-size: 50px;"
+              style="font-size: 60px;"
                 v-else
               >account_circle</v-icon>
           </v-flex>

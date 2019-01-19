@@ -89,23 +89,30 @@
       color="white"
     >
       <v-btn
+      @click="openfeed"
         color="blue"
         flat
-        to="/feeds"
         value="feeds"
       >
         <span>Home</span>
-        <v-icon>home</v-icon>
+          <v-badge right overlap>
+            <span v-if="bottomNav != 'feeds' && this.feeds > 0" slot="badge" style="font-size: 30px;">.</span>
+            <v-icon>home</v-icon>
+          </v-badge>
       </v-btn>
 
       <v-btn
+      @click="openmessage"
         color="blue"
         flat
         to="/messages"
         value="messages"
       >
         <span>Messages</span>
-        <v-icon>message</v-icon>
+        <v-badge right overlap>
+            <span v-if="bottomNav != 'messages' && this.unread > 0" slot="badge">{{ this.unread }}</span>
+            <v-icon>message</v-icon>
+          </v-badge>
       </v-btn>
 
       <v-btn
@@ -115,7 +122,7 @@
         value="networks"
       >
         <span>Network</span>
-        <v-icon>people</v-icon>
+            <v-icon>people</v-icon>
       </v-btn>
 
       <v-btn
@@ -125,7 +132,7 @@
         value="profile"
       >
         <span>Profile</span>
-        <v-icon>account_box</v-icon>
+            <v-icon>account_box</v-icon>
       </v-btn>
     </v-bottom-nav>
   </v-app>
@@ -189,8 +196,14 @@ export default {
       dialog: false,
       info: false,
       infotext: '',
-
+      user: '',
+      feeds: 0,
+      messages: 0,
+      unread: 0
    }
+  },
+  mounted () {
+    this.fetchAuthenticatedUser()
   },
 
   computed: {
@@ -230,10 +243,38 @@ export default {
    },
 
   methods: {
+      openmessage(){
+        this.messages = 0;
+        this.$router.push('/messages');
+      },
+      openfeed(){
+        this.feeds = 0;
+        this.$router.push('/feeds');
+      },
+      fetchAuthenticatedUser() {
+      axios.get('/api/auth/userid').then(response =>  {
+                  this.user = response.data.user;
+                  this.unread = response.data.unread;
+                  Echo.private(`post.${this.user}`)
+                        .listen('PostEvent', (e) => {
+                            this.feeds = this.feeds + 1;
+                            //console.log(this.post);
+                            //this.message.push(e.message);
+                        });
+                  Echo.private(`message.${this.user}`)
+                        .listen('MessageSent', (e) => {
+                            this.messages = this.messages + 1;
+                            this.unread = this.messages + this.unread;
+                            });
+                }).catch(error => {
+                    //$state.complete();
+                });
+    },
        swipe(direction){
            if (this.bottomNav == 'feeds') {
                 if (direction == 'Left') {
              this.bottomNav = 'messages' ;
+             this.messages = 0;
               this.$router.push('/messages');
           }
         }
@@ -244,6 +285,7 @@ export default {
             }
             else if (direction = 'Right') {
              this.bottomNav = 'feeds' ;
+             this.feeds = 0;
              this.$router.push('/feeds');
           }
         }
@@ -254,6 +296,7 @@ export default {
             }
             else if (direction == 'Right') {
              this.bottomNav = 'messages' ;
+             this.messages = 0;
              this.$router.push('/messages');
           }
         }

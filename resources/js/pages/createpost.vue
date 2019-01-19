@@ -93,7 +93,7 @@
           </v-flex>
           <v-flex v-else xs4 offset-xs2>
               <v-container fluid fill-height align-center justify-center>
-              <v-btn type="submit" class="white--text align-center" @click="submitFile()" :disabled="!text" :loading="dialog" color="blue">Submit Post</v-btn>
+              <v-btn type="submit" class="white--text align-center" @click="submitFile()" :disabled="!text || dialog" :loading="dialog" color="blue">Submit Post</v-btn>
               </v-container>
           </v-flex>
         </v-layout>

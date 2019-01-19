@@ -1,15 +1,14 @@
 <template>
-<v-app
- v-touch="{
-      left: () => swipe('Left'),
-    }"
->
+<v-app>
   <v-layout mt-5 mb-5>
     <v-flex xs12 sm6 offset-sm3>
-         <v-btn color="blue" dark right absolute fixed fab @click='createpost'>
+         <v-btn color="blue" dark right absolute fixed fab @click="createpost">
             <v-icon>create</v-icon>
          </v-btn>
-      <v-container v-for="post in post" v-if="post.text && post.user" v-bind:key='post.id'>
+                <v-btn v-if="this.newpost > 0" fab outline  style="font-size: 10px;" fixed absolute color="blue" class="white--text" large @click="scrollToTop">
+                   <v-icon size="50" color="blue">arrow_drop_up</v-icon><br/><br/> {{ this.newpost }} New
+                </v-btn>
+      <v-container v-for="(post,index) in post" v-if="post.text && post.user" v-bind:key='index'>
       <v-card>
           <div v-if="post && post.friendcomments || post && post.friendlikes">
           <v-card-text v-if="post && post.friendcomments && post.friendcomments.length > 0"><b>{{ post.friendcomments[0].first_name + " " + post.friendcomments[0].last_name }} commented on this post</b></v-card-text>
@@ -221,7 +220,7 @@ export default {
 
   data () {
     return {
-        newpost: null,
+        newpost: 0,
         clicked: '',
         post: [
 
@@ -239,9 +238,19 @@ export default {
   },
 
    methods: {
-       swipe(direction){
-         //this.$router.push('/messages');
-       },
+        onScroll (e) {
+        //console.log(e.target.scrollTop)
+      },
+        scrollToTop() {
+            var target = 0;
+            var options = {
+                duration: 70,
+                offset: 0,
+                easing: "linear"
+                };
+            this.newpost = 0;
+            this.$vuetify.goTo(target, options);
+            },
        likeAdded(value) {
           console.log(value)
           value.likes.push(1);
@@ -257,6 +266,8 @@ export default {
       playerOption(data) {
            const source = 'http://rubix.site/post_videos/' + data;
            return {
+               download: true,
+               airplay: true,
              url: source,
               keyShortcut: 'off',
              width: '100%' // Depends on its wrapper element.
@@ -298,23 +309,6 @@ export default {
        createpost() {
       this.$router.push('/createpost');
     },
-    getPosts() {
-         axios.get('/api/posts').then(response =>  {
-                     console.log(response.data.data);
-                     let friendspost = response.data.data.friendspost;
-                    let friendslike = response.data.data.friendlikes;
-                    let friendscomment = response.data.data.friendcomments;
-                    let userpost = response.data.data.userpost;
-                    let all = _.concat(friendscomment, friendslike, friendspost, userpost);
-                    let alls = _.orderBy(all, ['created_at'], ['desc']);
-                    //_.uniqBy([alls], 'id');
-                    console.log(alls);
-                    this.post = alls;
-                    this.user = response.data.user
-                }).catch(error => {
-                    //no network
-                });
-    },
     infiniteHandler($state) {
      axios.get('/api/posts?page='+this.page).then(response =>  {
                      console.log(response.data);
@@ -323,7 +317,7 @@ export default {
                         .listen('PostEvent', (e) => {
                             console.log(e.post);
                             this.post.unshift(e.post);
-                            this.newpost = true;
+                            this.newpost = this.newpost + 1;
                             console.log(this.post);
                             //this.message.push(e.message);
                         });
@@ -355,7 +349,7 @@ export default {
                                     videos : e.post.videos,
                                   };
                                   this.post.unshift(newpost);
-                                  this.newpost = true;
+                                  this.newpost = this.newpost + 1;
                                 }
                             //this.post.unshift(e.post);
                             console.log(this.post);
@@ -389,7 +383,7 @@ export default {
                                     videos : e.post.videos,
                                   };
                                   this.post.unshift(newpost);
-                                  this.newpost = true;
+                                  this.newpost = this.newpost + 1;
                                 }
                             //this.post.unshift(e.post);
                             console.log(this.post);
@@ -477,6 +471,16 @@ export default {
    },
 
   computed: {
+       target () {
+         return 0
+      },
+      options () {
+        return {
+          duration: 70,
+          offset: 0,
+          easing: "linear"
+        }
+      },
      player() {
         return this.$refs.videoPlayer.player
       },

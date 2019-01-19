@@ -8,7 +8,7 @@
         <span v-else><i style="font-size:12px;">last seen {{ this.computedLastSeen }}</i></span>
     </v-toolbar-title>
 </v-toolbar>
-<v-container  :style="{ maxHeight: winHeight}" class="scroll-y" mt-5 mb-5>
+<v-container   :style="{ maxHeight: winHeight}" class="scroll-y" mt-5 mb-5>
     <infinite-loading v-show="infinite" direction="top" @distance="1" @infinite="infiniteHandler"></infinite-loading>
       <v-card height="100%" v-if="!message && typemessage == false">
           <v-card-text
@@ -34,16 +34,9 @@
               <v-subheader>
              {{key}}
             </v-subheader>
-            <span v-for="(message, index) in value" :key="index" >
+            <span v-for="message in value" :key="message.id" >
              <Message :sending="sending" :message="message" :user="users" :authuser="authuser"></Message><br/>
             </span>
-          </span>
-          <span v-if="newmessage != 0">
-              <v-layout ma-0 pa-0>
-                  <v-flex xs12 offset-xs9>
-                       <span @click="readNew" class="blue--text">{{newmessage}} new <v-icon size="30px" color="blue">arrow_drop_down</v-icon></span>
-                  </v-flex>
-              </v-layout>
           </span>
       </div>
       </v-container>
@@ -143,7 +136,6 @@ export default {
     },
      data() {
             return {
-                newmessage: 0,
                 page: 50,
                 infinite: true,
                 online: false,
@@ -201,10 +193,6 @@ export default {
         },
 
         methods: {
-            readNew(){
-              this.newmessage = 0;
-              this.scrollToEnd;
-            },
             infiniteHandler($state) {
                 let _this = this;
                 let id = this.$route.params.id;
@@ -241,15 +229,7 @@ export default {
                 .listen('MessageSent', (e) => {
                     //console.log(e);
                     //console.log('hello');
-                    // var container = this.$el.querySelector(".container");
-                    // if (container.scrollTop == container.scrollHeight){
-                         this.message.push(e.message);
-                       //  this.newmessage = this.newmessage + 1;
-                    //}
-                    //else {
-                         //this.message.push(e.message);
-                        //_this.scrollToEnd();
-                   // }
+                    this.message.push(e.message);
                 });
                 Echo.private(`messag.${this.users.id}.${this.authuser.id}`)
                 .listenForWhisper('typing', (e) => {
@@ -262,22 +242,15 @@ export default {
                 }, 5000);
                 });
                 if (response.data.count > this.page) {
-
+                        _this.page += 50;
                         let result = _.orderBy(response.data.msg, ['created_at'], ['asc']);
                         _this.message.push(...result);
-                       // if (_this.page == 50){
-                           // _this.scrollToEnd();
-                       // }
-                        _this.page += 50;
-                    // _this.scrollToEnd();
+                     _this.scrollToEnd();
                         $state.loaded();
                      }else {
                          let result = _.orderBy(response.data.msg, ['created_at'], ['asc']);
                         _this.message.push(...result);
-                        //if (_this.page == 50){
-                          //  _this.scrollToEnd();
-                        //}
-                    // _this.scrollToEnd();
+                     //_this.scrollToEnd();
                         $state.complete();
                         _this.infinite = false;
                      }
@@ -404,8 +377,10 @@ export default {
                 });
             }, 300);
             },
+
             scrollToEnd() {
             this.$nextTick(() => {
+                //$vuetify.goTo(99999, {duration: 342, offset: 0, easing: linear});
             var container = this.$el.querySelector(".container");
             container.scrollTop = container.scrollHeight;
             })
@@ -413,7 +388,6 @@ export default {
             postMessage() {
                 //moment("1995-12-25")
                 //moment().format('LL');
-                if (this.user.message){
                 this.typemessage = true;
                 //this.user.id = random(1, 3456778)
                 this.user.sender.first_name = this.authuser.first_name;
@@ -422,7 +396,6 @@ export default {
                  this.user.sender.avatar = this.authuser.avatar;
                 this.user.createdDate = moment().format('LT');
                 this.message.push(this.user);
-                var container = this.$el.querySelector(".container");
                 this.scrollToEnd();
                 let message = this.user.message;
                 this.user = {
@@ -443,7 +416,6 @@ export default {
                 }).catch(error => {
                     //this.$router.go(-1);
                 });
-            }
             }
         }
 

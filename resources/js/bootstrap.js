@@ -23,7 +23,9 @@ Vue.use(VueXgplayer, {
       width: 100,
       height: 40
     },
-    playsinline: false
+    playsinline: false,
+    download: true,
+    airplay: true,
   })
 
 import 'vuetify/dist/vuetify.min.css'
