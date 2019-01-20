@@ -1,14 +1,12 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Account;
-use App\Fund;
-use App\Profile;
-use App\Bet;
-use App\Vote;
-use App\signupBonus;
-use App\referralBonus;
 use App\User;
+use App\Profile;
+use App\Post;
+use App\Experience;
+use App\Accomplishment;
+use App\Skill;
 
 class DatabaseSeeder extends Seeder
 {
@@ -30,7 +28,13 @@ class DatabaseSeeder extends Seeder
 
              $this->command->line("Data cleared, starting from blank database.");
          }
-         $users = factory(User::class, 1235)->create();
+         $users = factory(User::class, 100)->create();
+         factory(Post::class, 367)->create();
+         factory(Experience::class, 103)->create();
+         factory(Accomplishment::class, 120)->create();
+         factory(Skill::class, 200)->create();
+
+
 
          $this->command->info("Hurrah! Database has been seeded.");
     }

@@ -400,7 +400,7 @@ export default {
                         let all = _.concat(friendscomment, friendslike, friendshares, friendspost, userpost);
                         let alls = _.orderBy(all, ['created_at'], ['desc']);
                         //let alls = _.orderBy(_.uniqBy([alls], 'id'), ['created_at'], ['desc']);
-                        let unique =_.uniqBy(alls, 'id');
+                        let unique =_.uniqBy(alls.id, 'id');
                         console.log(alls);
                         console.log(unique);
                         this.post.push(...unique);
@@ -414,7 +414,7 @@ export default {
                         let all = _.concat(friendscomment, friendslike, friendshares, friendspost, userpost);
                         let alls = _.orderBy(all, ['created_at'], ['desc']);
                         //let alls = _.orderBy(_.uniqBy([alls], 'id'), ['created_at'], ['desc']);
-                        let unique =_.uniqBy(alls, ['id']);
+                        let unique =_.uniqBy(alls, 'id');
                         console.log(alls);
                         console.log(unique);
                         this.post.push(...unique);

@@ -147,7 +147,7 @@
 
         <v-container v-if="user.posts != null">
              <v-card-text v-if="user.posts != null"><b>Feed HighLights</b></v-card-text>
-            <v-card v-for="post in user.posts"
+            <v-card v-for="post in user.posts.slice(0, 4)"
                             :key="post.id"
                      class="elevation-6">
                  <v-card-text><i>created a post {{post.createdDate}}</i><br/><b>{{post.text.substring(0, 30)}}....</b></v-card-text>
@@ -169,10 +169,10 @@
         </v-container>
 
 
-         <v-container v-if="user && user.experience != null">
-              <v-card-text v-if="user && user.experience != null"><b>Experience and Education</b></v-card-text>
+         <v-container v-if="user && user.experiences != null">
+              <v-card-text v-if="user && user.experiences != null"><b>Experience and Education</b></v-card-text>
                     <v-card
-                    v-for="experience in user.experience"
+                    v-for="experience in user.experiences"
                             :key="experience.id"
                      class="elevation-6">
                         <v-layout
@@ -204,20 +204,20 @@
         </v-container>
 
 
-        <v-container v-if="user && user.skill != null">
-             <v-card-text v-if="user && user.skill != null"><b>Skills</b></v-card-text>
+        <v-container v-if="user && user.skills != null">
+             <v-card-text v-if="user && user.skills != null"><b>Skills</b></v-card-text>
             <v-card>
-                 <v-chip v-for="skill in user.skill" v-bind:key='skill.id'>
+                 <v-chip v-for="skill in user.skills" v-bind:key='skill.id'>
                      <v-avatar class="blue">{{ skill.description.slice(0,1) }}</v-avatar>
                      {{skill.description}}
                    </v-chip>
             </v-card>
         </v-container>
 
-         <v-container v-if="user && user.accomplishment != null">
-             <v-card-text v-if="user && user.accomplishment != null"><b>Works and Accomplishments</b></v-card-text>
+         <v-container v-if="user && user.accomplishments != null">
+             <v-card-text v-if="user && user.accomplishments != null"><b>Works and Accomplishments</b></v-card-text>
            <v-card
-                    v-for="accomplishment in user.accomplishment"
+                    v-for="accomplishment in user.accomplishments"
                             :key="accomplishment.id"
                      class="elevation-6">
                          <v-card-text><b>{{accomplishment.name}}</b></v-card-text>

@@ -53,7 +53,7 @@ class PostController extends Controller
     $data = $post;
     $friends = $user->getFriends();
 
-    if ($friends) {
+    if ($friends->count() != 0) {
     broadcast(new CommentEvent($user, $data, $friends));
     }
     broadcast(new Comment($user, $data))->toOthers();
@@ -75,7 +75,7 @@ class PostController extends Controller
     $data = $post;
     $friends = $user->getFriends();
 
-    if ($friends) {
+    if ($friends->count() != 0) {
     broadcast(new ShareEvent($user, $data, $friends));
     }
     broadcast(new Share($user, $data))->toOthers();
@@ -96,7 +96,7 @@ class PostController extends Controller
     $data = $post;
     $friends = $user->getFriends();
 
-    if ($friends) {
+    if ($friends->count() != 0) {
     broadcast(new LikeEvent($user, $data, $friends));
     }
     broadcast(new Like($user, $data))->toOthers();
@@ -111,7 +111,7 @@ class PostController extends Controller
     $data = $post;
     $friends = $user->getFriends();
 
-    if ($friends) {
+    if ($friends->count() != 0) {
     broadcast(new UnlikeEvent($user, $data, $friends));
     }
     broadcast(new Unlike($user, $data))->toOthers();
@@ -215,7 +215,7 @@ public function getPost( $id ){
 
          $friends = $user->getFriends();
        //$images = $post->Images;
-       if ($friends) {
+       if ($friends->count() != 0) {
        broadcast(new PostEvent($user, $data, $friends));
        }
      return response()->json(['message' => 'Post Added Successfully'], 201);

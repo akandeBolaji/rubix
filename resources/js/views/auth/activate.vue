@@ -56,7 +56,7 @@
         blue--text
         xs12
       >
-        &copy;2018 — <strong>Rubix</strong>
+        &copy;2019 — <strong>Rubix</strong>
       </v-flex>
       </v-layout>
        </v-footer>

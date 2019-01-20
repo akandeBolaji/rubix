@@ -3,6 +3,9 @@
 
 use Faker\Generator as Faker;
 use App\User;
+use App\Profile;
+use App\Post;
+use App\Skill;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,10 +27,19 @@ $factory->define(User::class, function (Faker $faker) {
         'headline' => $faker->jobTitle,
         'phone' => $faker->phoneNumber,
         'status' => 'activated',
+        'last_seen' => $faker->dateTime,
+        'view' => $faker->randomDigit,
         'first_name' => $faker->firstName,
         'last_name' => $faker->lastName,
     ];
 });
+
+$factory->afterCreating(User::class, function ($user, $faker) {
+    $user->profile()->save(factory(Profile::class)->make());
+    $user->posts()->save(factory(Post::class)->make());
+    $user->skills()->save(factory(Skill::class)->make());
+});
+
 
 
 
