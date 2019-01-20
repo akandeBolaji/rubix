@@ -39,7 +39,7 @@ import 'vuetify/dist/vuetify.min.css'
 window.Vue = Vue;
 Vue.use(Vuetify, {
     //iconfont: 'fa'
-    //iconfont: 'mdi' // 'md' || 'mdi' || 'fa' || 'fa4'
+    //iconfont: 'fa' || 'mdi' || 'md' || 'fa4'
    });
 window.axios = axios;
 Vue.use(VeeValidate);

@@ -17,9 +17,9 @@
           <v-list-tile-title v-if="sharing"><i>Sharing</i></v-list-tile-title>
           <v-list-tile-title v-else><b>Share to Friends on Rubix</b></v-list-tile-title>
         </v-list-tile>
-         <social-sharing url="https://rubix.site/"
-            title=" "
-            description=" "
+         <social-sharing :url= posturl(post)
+            :title = title(post)
+            :description= description(post)
             quote=" "
             hashtags=" "
             twitter-user=" "
@@ -30,7 +30,7 @@
                 <v-list-tile>
                 <v-list-tile-avatar>
                     <v-avatar size="32px" tile>
-                    <v-icon>facebook_icon</v-icon>
+                    <v-icon>share</v-icon>
                     </v-avatar>
                 </v-list-tile-avatar>
                 <v-list-tile-title><b>Share on Facebook</b></v-list-tile-title>
@@ -39,11 +39,11 @@
         </div>
         </social-sharing>
 
-         <social-sharing url="https://rubix.site/"
-            title=" "
-            description=" "
-            quote=" "
-            hashtags=" "
+         <social-sharing :url= posturl(post)
+            :title = title(post)
+            :description= description(post)
+            quote= ''
+            hashtags= " "
             twitter-user=" "
             inline-template>
         <div>
@@ -61,9 +61,9 @@
         </div>
         </social-sharing>
 
-        <social-sharing url="https://rubix.site/"
-            title=" "
-            description=" "
+        <social-sharing url= posturl(post)
+            :title = title(post)
+            :description= description(post)
             quote=" "
             hashtags=" "
             twitter-user=" "
@@ -98,9 +98,17 @@ export default {
   },
 
    methods: {
+        posturl(data){
+        return `https://rubix.site/post/${data.id}`;
+       },
+       title(data){
+        return `A Post by ${data.user.first_name} ${data.user.last_name}`;
+       },
+       description(data){
+         return `${data.text.slice(0,200)} ...`;
+       },
        sharePost(data, post){
            this.sharing = true;
-          this.$emit('addshare', post);
           axios.post( '/api/posts/' + data + '/share').then(response =>  {
                    this.sharesheet = false;
                    this.shared = false;

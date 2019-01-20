@@ -66,9 +66,7 @@
              <v-flex  @click="commentRef()" sm4>
              <v-btn flat><v-icon>message</v-icon>Comment</v-btn>
             </v-flex>
-          <v-flex xs6 sm4 @click="sharePost">
-             <v-btn flat><v-icon>share</v-icon>Share</v-btn>
-          </v-flex>
+             <Shares :post="post" :user="user"></Shares>
          </v-layout>
         </v-card-actions>
       </v-card>
@@ -142,7 +140,7 @@
             <v-icon large style="font-size: 50px;" v-else>account_circle</v-icon>
           </v-flex>
           <v-flex xs10>
-             <v-card-text><b>{{comment.first_name + " " + comment.last_name}}</b><br/>{{comment.headline}}<br/><b>{{ comment.data.text }}</b></v-card-text>
+             <v-card-text><span style="font-size: 11px;"><b>{{comment.first_name + " " + comment.last_name}}</b><br/>{{comment.headline}}<br/></span><span style="font-size: 16px;">{{ comment.data.text }}</span></v-card-text>
           </v-flex>
     </v-layout>
          <v-divider></v-divider>
@@ -198,13 +196,14 @@
 </v-app>
 </template>
 <script>
-
+import Shares from './shares.vue';
 import Likes from './likes.vue';
 import addComment from './add-comment.vue';
 var _ = require('lodash');
 var removal = '';
 export default {
     components: {
+        Shares,
       Likes,
       addComment,
     },
@@ -388,7 +387,7 @@ export default {
                         this.infinite = false;
 
                 }).catch(error => {
-                    $state.complete();
+                    $state.error();
                 });
     },
             getPost() {

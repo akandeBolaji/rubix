@@ -142,7 +142,7 @@
              <v-flex xs5 sm4 @click="addComment(post.id)">
              <v-btn flat><v-icon>message</v-icon>Comment</v-btn>
             </v-flex>
-            <Shares :post="post" :user="user" v-on:addshare="shareAdded"></Shares>
+            <Shares :post="post" :user="user"></Shares>
          </v-layout>
         </v-card-actions>
         <addComment v-on:addcomment="commentAdded"  :clicked="clicked" :user="user" :post="post"></addComment>
@@ -209,10 +209,6 @@ export default {
             this.newpost = 0;
             this.$vuetify.goTo(target, options);
             },
-            shareAdded(value) {
-          console.log(value)
-          value.usershare = [];
-       },
        likeAdded(value) {
           console.log(value)
           value.likes.push(1);
