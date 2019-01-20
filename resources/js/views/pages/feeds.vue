@@ -10,10 +10,11 @@
                 </v-btn>
       <v-container v-for="(post,index) in post" v-if="post.text && post.user" v-bind:key='index'>
       <v-card>
-          <div v-if="post && post.friendcomments || post && post.friendlikes">
+          <div v-if="post && post.friendcomments || post && post.friendlikes || post && post.friendshares ">
           <v-card-text v-if="post && post.friendcomments && post.friendcomments.length > 0"><b>{{ post.friendcomments[0].first_name + " " + post.friendcomments[0].last_name }} commented on this post</b></v-card-text>
           <v-card-text v-else-if="post && post.friendlikes && post.friendlikes.length == 1"><b> {{ post.friendlikes[0].first_name + " " + post.friendlikes[0].last_name }} liked this post</b></v-card-text>
           <v-card-text v-else-if="post && post.friendlikes && post.friendlikes.length > 1"><b>{{ post.friendlikes[0].first_name + " " + post.friendlikes[0].last_name }} and {{ post.friendlikes.length - 1 }} other connects liked this post</b></v-card-text>
+          <v-card-text v-else-if="post && post.friendshares && post.friendshares.length > 1"><b>{{ post.friendshares[0].first_name + " " + post.friendshares[0].last_name }} shared a post</b></v-card-text>
           </div>
           <v-divider></v-divider>
           <v-card-text>
@@ -41,7 +42,7 @@
              <strong><b>{{ post.user.first_name + " " + post.user.last_name }}</b></strong><br/><span  v-if="post.user.headline"> {{post.user.headline}} <br/> </span> {{ getTime(post.created_at) }}
           </v-flex>
           <v-flex sm1 md1 xs1>
-             <v-icon @click="sheet = true">more</v-icon>
+             <v-icon>more</v-icon>
           </v-flex>
         </v-layout>
           </v-card-text>
@@ -141,9 +142,7 @@
              <v-flex xs5 sm4 @click="addComment(post.id)">
              <v-btn flat><v-icon>message</v-icon>Comment</v-btn>
             </v-flex>
-          <v-flex xs6 sm4 @click="sharePost(post.id)">
-             <v-btn flat><v-icon>share</v-icon>Share</v-btn>
-          </v-flex>
+            <Shares :post="post" :user="user" v-on:addshare="shareAdded"></Shares>
          </v-layout>
         </v-card-actions>
         <addComment v-on:addcomment="commentAdded"  :clicked="clicked" :user="user" :post="post"></addComment>
@@ -152,56 +151,13 @@
      <infinite-loading v-show="infinite" @distance="1" @infinite="infiniteHandler"></infinite-loading>
     </v-flex>
   </v-layout>
-   <v-bottom-sheet v-model="sheet">
-      <v-list>
-        <v-list-tile
-          @click="hidePost(post.id)"
-        >
-          <v-list-tile-avatar>
-            <v-avatar size="32px" tile>
-              <v-icon>share</v-icon>
-            </v-avatar>
-          </v-list-tile-avatar>
-          <v-list-tile-title><b>Hide this post</b></v-list-tile-title>
-        </v-list-tile>
-           <v-list-tile
-          @click="unfollowUser(post.user.id)"
-        >
-          <v-list-tile-avatar>
-            <v-avatar size="32px" tile>
-              <v-icon>share</v-icon>
-            </v-avatar>
-          </v-list-tile-avatar>
-          <v-list-tile-title><b>Unfollow User</b></v-list-tile-title>
-        </v-list-tile>
-         <v-list-tile
-          @click="reportPost(post.id)"
-        >
-          <v-list-tile-avatar>
-            <v-avatar size="32px" tile>
-              <v-icon>share</v-icon>
-            </v-avatar>
-          </v-list-tile-avatar>
-          <v-list-tile-title><b>Report this post</b></v-list-tile-title>
-        </v-list-tile>
-         <v-list-tile
-          @click="improveFeed"
-        >
-          <v-list-tile-avatar>
-            <v-avatar size="32px" tile>
-              <v-icon>share</v-icon>
-            </v-avatar>
-          </v-list-tile-avatar>
-          <v-list-tile-title><b>Improve my feed</b></v-list-tile-title>
-        </v-list-tile>
-      </v-list>
-    </v-bottom-sheet>
 </v-app>
 </template>
 
 
 <script>
 import Likes from './likes.vue';
+import Shares from './shares.vue';
 import Comment from './comment.vue';
 import addComment from './add-comment.vue';
 var _ = require('lodash');
@@ -209,6 +165,7 @@ var moment = require('moment-timezone');
 export default {
     components: {
       Likes,
+      Shares,
       addComment,
       Comment
     },
@@ -233,6 +190,7 @@ export default {
         page: 1,
         addcomment:false,
         sheet: false,
+        sharesheet: false,
        image: false,
     }
   },
@@ -251,6 +209,10 @@ export default {
             this.newpost = 0;
             this.$vuetify.goTo(target, options);
             },
+            shareAdded(value) {
+          console.log(value)
+          value.usershare = [];
+       },
        likeAdded(value) {
           console.log(value)
           value.likes.push(1);
@@ -355,6 +317,32 @@ export default {
                             console.log(this.post);
                             //this.message.push(e.message);
                         });
+                         Echo.private(`share.${this.user.id}`)
+                        .listen('ShareEvent', (e) => {
+                            console.log(e);
+                            const checker = _.some(this.post, ['id', e.post.id]);
+                            console.log(checker);
+                            if (checker != true) {
+                              const newpost = {
+                                    comments: e.post.comments,
+                                    created_at: e.post.created_at,
+                                    id : e.post.id,
+                                    images : e.post.images,
+                                    likes : e.post.likes,
+                                    friendshares : [e.auth],
+                                    text : e.post.text,
+                                    user : e.post.user,
+                                    user_id : e.post.user_id,
+                                    usershare : e.post.usershare,
+                                    videos : e.post.videos,
+                                  };
+                                  this.post.unshift(newpost);
+                                  this.newpost = this.newpost + 1;
+                            }
+                            //this.post.unshift(e.post);
+                            console.log(this.post);
+                            //this.message.push(e.message);
+                        });
                         Echo.private(`like.${this.user.id}`)
                         .listen('LikeEvent', (e) => {
                             console.log(e);
@@ -411,8 +399,9 @@ export default {
                         let friendspost = response.data.friendspost.data;
                         let friendslike = response.data.friendlikes.data;
                         let friendscomment = response.data.friendcomments.data;
+                        let friendshares = response.data.friendshares.data;
                         let userpost = response.data.userpost.data;
-                        let all = _.concat(friendscomment, friendslike, friendspost, userpost);
+                        let all = _.concat(friendscomment, friendslike, friendshares, friendspost, userpost);
                         let alls = _.orderBy(all, ['created_at'], ['desc']);
                         //let alls = _.orderBy(_.uniqBy([alls], 'id'), ['created_at'], ['desc']);
                         let unique =_.uniqBy(alls, 'id');
@@ -423,9 +412,10 @@ export default {
                      }else {
                          let friendspost = response.data.friendspost.data;
                         let friendslike = response.data.friendlikes.data;
+                        let friendshares = response.data.friendshares.data;
                         let friendscomment = response.data.friendcomments.data;
                         let userpost = response.data.userpost.data;
-                        let all = _.concat(friendscomment, friendslike, friendspost, userpost);
+                        let all = _.concat(friendscomment, friendslike, friendshares, friendspost, userpost);
                         let alls = _.orderBy(all, ['created_at'], ['desc']);
                         //let alls = _.orderBy(_.uniqBy([alls], 'id'), ['created_at'], ['desc']);
                         let unique =_.uniqBy(alls, ['id']);

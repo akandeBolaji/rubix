@@ -50,6 +50,14 @@ Broadcast::channel('postcomment.{id}', function ($user) {
     return true;
 });
 
+Broadcast::channel('share.{id}', function ($user) {
+    return true;
+});
+
+Broadcast::channel('postshare.{id}', function ($user) {
+    return true;
+});
+
 Broadcast::channel('like.{id}', function ($user) {
     return true;
 });

@@ -47,6 +47,7 @@ Route::group(['middleware' => ['jwt.auth', 'last_seen']], function () {
     Route::delete('/message/{id}', 'MessageController@deleteMessage');
     Route::get('/posts/{id}','PostController@getPost');
     Route::post('/posts/{id}/like', 'PostController@postLike');
+    Route::post('/posts/{id}/share', 'PostController@postShare');
     Route::get('/sent','ConnectController@getSent');
     Route::get('/received','ConnectController@getReceived');
     Route::get('/suggestions','ConnectController@getSuggestions');

@@ -11,9 +11,11 @@ use App\Post;
 use App\Events\PostEvent;
 use App\Events\CommentEvent;
 use App\Events\LikeEvent;
+use App\Events\ShareEvent;
 use App\Events\UnlikeEvent;
 use App\Events\Comment;
 use App\Events\Like;
+use App\Events\Share;
 use App\Events\Unlike;
 use Validator;
 
@@ -58,6 +60,28 @@ class PostController extends Controller
     return response()->json( ['message' => $post->id,'post_comment' => true], 201 );
   }
 
+
+  public function postShare( $postID ){
+    $user = JWTAuth::parseToken()->authenticate();
+    $post = Post::where('id', '=', $postID)->first();
+
+      /*
+          If the user doesn't already like the cafe, attaches the cafe to the user's likes
+      */
+      $post->shares()->attach( $user->id, [
+          'created_at'    => date('Y-m-d H:i:s'),
+          'updated_at'    => date('Y-m-d H:i:s')
+    ] );
+    $data = $post;
+    $friends = $user->getFriends();
+
+    if ($friends) {
+    broadcast(new ShareEvent($user, $data, $friends));
+    }
+    broadcast(new Share($user, $data))->toOthers();
+    return response()->json( ['message' => $post->id,'post_shared' => true], 201 );
+  }
+
   public function postLike( $postID ){
     $user = JWTAuth::parseToken()->authenticate();
     $post = Post::where('id', '=', $postID)->first();
@@ -96,15 +120,17 @@ class PostController extends Controller
 
   public function getPosts(){
     $user = JWTAuth::parseToken()->authenticate();
-    $friendspost = Post::whereIn('user_id', $user->getFriends()->pluck('id'))->with(['user','images', 'comments','userlike', 'videos', 'likes'])->latest()->paginate(10);
-    $userpost = Post::where('user_id', $user->id)->with(['user','images', 'comments','userlike', 'videos', 'likes'])->latest()->paginate(10);
+    $friendspost = Post::whereIn('user_id', $user->getFriends()->pluck('id'))->with(['user','images', 'comments','userlike', 'usershare', 'usercomment', 'videos', 'likes'])->latest()->paginate(10);
+    $userpost = Post::where('user_id', $user->id)->with(['user','images', 'comments','userlike', 'usershare', 'usercomment', 'videos', 'likes'])->latest()->paginate(10);
     $friendcomments = Post::whereNotIn('user_id', $user->getFriends()->pluck('id'))
-    ->whereHas('friendcomments')->with(['user','images', 'comments','userlike', 'videos', 'likes', 'friendcomments'])->latest()->paginate(10);
+    ->whereHas('friendcomments')->with(['user','images', 'comments','userlike', 'usershare', 'usercomment', 'videos', 'likes', 'friendcomments'])->latest()->paginate(10);
     $friendlikes = Post::whereNotIn('user_id', $user->getFriends()->pluck('id'))
-    ->whereHas('friendlikes')->with(['user','images', 'comments','userlike', 'videos', 'likes', 'friendlikes'])->latest()->paginate(10);
+    ->whereHas('friendlikes')->with(['user','images', 'comments','userlike', 'usershare', 'usercomment', 'videos', 'likes', 'friendlikes'])->latest()->paginate(10);
+    $friendshares = Post::whereNotIn('user_id', $user->getFriends()->pluck('id'))
+    ->whereHas('friendshares')->with(['user','images', 'comments','userlike', 'usershare', 'usercomment', 'videos', 'likes', 'friendshares'])->latest()->paginate(10);
     //$post = Post::with(['user','images', 'comments','userlike', 'videos', 'likes'])->latest()->paginate(10);
     //return response()->json(['post' => $post, 'user' => $user], 201);
-    return response()->json(compact('userpost', 'friendcomments', 'friendspost', 'friendlikes', 'user'), 201);
+    return response()->json(compact('userpost', 'friendcomments', 'friendspost', 'friendshares', 'friendlikes', 'user'), 201);
 }
 
 /*
@@ -125,6 +151,7 @@ public function getPost( $id ){
     $images = $post->Images;
     $comments = $post->Comments;
     $userlike = $post->Userlike;
+    $usershare = $post->Usershare;
     $videos = $post->Videos;
     $likes = $post->Likes;
 

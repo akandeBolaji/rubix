@@ -9,6 +9,9 @@ import VueXgplayer from 'vue-xgplayer'
 import 'video.js/dist/video-js.css'
 import InfiniteLoading from 'vue-infinite-loading';
 import VueResource from 'vue-resource'
+import SocialSharing from 'vue-social-sharing';
+
+Vue.use(SocialSharing);
 
 
 Vue.use(VueResource);
