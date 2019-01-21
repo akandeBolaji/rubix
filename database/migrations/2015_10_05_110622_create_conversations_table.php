@@ -8,14 +8,14 @@ class CreateConversationsTable extends Migration
 {
     /**
      * Run the migrations.
-     * 
+     *
      * @return void
      */
     public function up()
     {
         Schema::create('conversations', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_one');
+            $table->integer('user_one')->default(1);
             $table->integer('user_two');
             $table->boolean('status');
             $table->timestamps();
@@ -24,7 +24,7 @@ class CreateConversationsTable extends Migration
 
     /**
      * Reverse the migrations.
-     * 
+     *
      * @return void
      */
     public function down()

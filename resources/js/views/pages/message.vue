@@ -17,7 +17,8 @@
               >account_circle</v-icon>
           </v-flex>
           <v-flex xs11>
-            <span v-if="message.message"><b>{{message.sender.first_name + " " + message.sender.last_name}}</b> . {{ getTime(message.created_at) }}<br/>{{ message.message }}</span>
+            <span v-if="message.message && message.sender.type == 'admin'"><b>{{message.sender.first_name + " " + message.sender.last_name}}</b> . {{ getTime(message.created_at) }}<br/><span v-html="message.message"></span></span>
+            <span v-else-if="message.message"><b>{{message.sender.first_name + " " + message.sender.last_name}}</b> . {{ getTime(message.created_at) }}<br/>{{ message.message }}</span>
             <span v-else-if="message.file"><b>{{message.sender.first_name + " " + message.sender.last_name}}</b> . {{ getTime(message.created_at) }}<br/>
             <v-card>
                 <v-list>

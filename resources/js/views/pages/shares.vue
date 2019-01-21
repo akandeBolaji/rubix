@@ -6,7 +6,7 @@
   <v-bottom-sheet inset v-model="sharesheet">
       <v-list>
           <v-list-tile
-          v-if="post.usershare.length == 0 && post.userlike.length == 0 && post.usercomment.length == 0 && post.user.id != user.id && shared == true"
+          v-if="post.usershare.length == 0 && post.userlike.length == 0 && post.usercomment.length == 0 && post.user.id != user.id && post.user.type != 'admin' && shared == true"
           @click="sharePost(post.id, post)"
         >
           <v-list-tile-avatar>

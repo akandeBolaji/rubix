@@ -122,6 +122,7 @@ class PostController extends Controller
     $user = JWTAuth::parseToken()->authenticate();
     $friendspost = Post::whereIn('user_id', $user->getFriends()->pluck('id'))->with(['user','images', 'comments','userlike', 'usershare', 'usercomment', 'videos', 'likes'])->latest()->paginate(10);
     $userpost = Post::where('user_id', $user->id)->with(['user','images', 'comments','userlike', 'usershare', 'usercomment', 'videos', 'likes'])->latest()->paginate(10);
+    $adminpost = Post::where('type', 'admin')->with(['user','images', 'comments','userlike', 'usershare', 'usercomment', 'videos', 'likes'])->latest()->paginate(10);
     $friendcomments = Post::whereNotIn('user_id', $user->getFriends()->pluck('id'))
     ->whereHas('friendcomments')->with(['user','images', 'comments','userlike', 'usershare', 'usercomment', 'videos', 'likes', 'friendcomments'])->latest()->paginate(10);
     $friendlikes = Post::whereNotIn('user_id', $user->getFriends()->pluck('id'))
@@ -130,7 +131,7 @@ class PostController extends Controller
     ->whereHas('friendshares')->with(['user','images', 'comments','userlike', 'usershare', 'usercomment', 'videos', 'likes', 'friendshares'])->latest()->paginate(10);
     //$post = Post::with(['user','images', 'comments','userlike', 'videos', 'likes'])->latest()->paginate(10);
     //return response()->json(['post' => $post, 'user' => $user], 201);
-    return response()->json(compact('userpost', 'friendcomments', 'friendspost', 'friendshares', 'friendlikes', 'user'), 201);
+    return response()->json(compact('userpost', 'friendcomments', 'adminpost', 'friendspost', 'friendshares', 'friendlikes', 'user'), 201);
 }
 
 /*

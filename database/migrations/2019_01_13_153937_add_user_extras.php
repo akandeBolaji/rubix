@@ -15,6 +15,8 @@ class AddUserExtras extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->integer('view')->default(0);
+            $table->integer('login')->default(0);
+            $table->string('type')->default("user");
             });
     }
 

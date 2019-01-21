@@ -58,6 +58,7 @@ class ConnectController extends Controller
         //$friendships = $user->getAllFriendships();
         //$friends = $user->getFriends()->count();
         $friends_id = $user->getFriends()->pluck('id');
+        $admins_id =\App\User::whereIn('type', 'admin')->get()->pluck('id');
         $pending_friendships = $user->getPendingFriendships()->where('recipient_id', '!=', $user->id)->pluck('recipient_id');
         //$accepted_requests = $user->getAcceptedFriendships();
         $denied_requests = $user->getDeniedFriendships()->pluck('recipient_id');
@@ -66,7 +67,7 @@ class ConnectController extends Controller
         $friends_count = $user->getFriendsCount();
         $friends_of_friends = $user->getFriendsOfFriends(20);
         $friends_of_friends_id = $user->getFriendsOfFriends()->pluck('id');
-        $suggestions = \App\User::where('id', '!=', $user->id)->whereNotIn('id', $friends_id)->whereNotIn('id', $denied_requests)
+        $suggestions = \App\User::where('id', '!=', $user->id)->whereNotIn('id', $friends_id)->whereNotIn('id', $admins_id)->whereNotIn('id', $denied_requests)
         ->whereNotIn('id', $blocked_friendships)->whereNotIn('id', $pending_requests)->whereNotIn('id', $pending_friendships)->whereNotIn('id', $friends_of_friends_id)->latest()->paginate(20);
         //$mutual = \App\User::where('id', '!=', $user->id)->whereNotIn('id', $friends_id)->whereNotIn('id', $denied_requests)
         //->whereNotIn('id', $blocked_friendships)->whereNotIn('id', $pending_requests)->whereNotIn('id', $pending_friendships);
@@ -222,6 +223,10 @@ class ConnectController extends Controller
           /*
               If the user doesn't already like the cafe, attaches the cafe to the user's likes
           */
+          $admin =\App\User::where('id', $recipient->id)->where('type', 'admin')->count();
+          if ($admin > 0)
+          return response()->json( ['message' => "You cannot connect an admin"], 422 );
+
           if ($user->id == $recipient->id)
           return response()->json( ['message' => "You cannot connect yourself"], 422 );
 

@@ -76,10 +76,10 @@
             </v-layout>
         </v-container>
 
-         <v-container v-if="user.experience">
-              <v-card-text v-if="user.experience != 0"><b>Experience and Education</b></v-card-text>
+         <v-container v-if="user.experiences != 0">
+              <v-card-text v-if="user.experiences != 0"><b>Experience and Education</b></v-card-text>
                     <v-card
-                    v-for="experience in user.experience"
+                    v-for="experience in user.experiences"
                             :key="experience.id"
                      class="elevation-6">
                         <v-layout
@@ -101,26 +101,26 @@
         </v-container>
 
 
-        <v-container v-if="user.skill">
-             <v-card-text v-if="user.skill != 0"><b>Skills</b></v-card-text>
+        <v-container v-if="user.skills">
+             <v-card-text v-if="user.skills != 0"><b>Skills</b></v-card-text>
             <v-card>
-                 <v-chip v-for="skill in user.skill" v-bind:key='skill.id'>
+                 <v-chip v-for="skill in user.skills" v-bind:key='skill.id'>
                      <v-avatar class="blue">{{ skill.description.slice(0,1) }}</v-avatar>
                      {{skill.description}}
                    </v-chip>
             </v-card>
         </v-container>
 
-         <v-container v-if="user.accomplishment">
-             <v-card-text v-if="user.accomplishment != 0"><b>Works and Accomplishments</b></v-card-text>
+         <v-container v-if="user.accomplishments">
+             <v-card-text v-if="user.accomplishments != 0"><b>Works and Accomplishments</b></v-card-text>
            <v-card
-                    v-for="accomplishment in user.accomplishment"
+                    v-for="accomplishment in user.accomplishments"
                             :key="accomplishment.id"
                      class="elevation-6">
                          <v-card-text><b>{{accomplishment.name}}</b></v-card-text>
                           <v-card-text>{{accomplishment.description}}</v-card-text>
                            <v-card-text v-if="accomplishment.certificates">{{accomplishment.certificates}}</v-card-text>
-                            <v-card-text v-if="accomplishment.works">{{accomplishment.works}}</v-card-text>
+                            <v-card-text v-if="accomplishment.links">{{accomplishment.links}}</v-card-text>
                     </v-card>
         </v-container>
 

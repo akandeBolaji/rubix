@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use JWTAuth;
+use JWTGuard;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Contracts\JWTSubject as JWTSubject;
 use Validator;
@@ -73,14 +74,36 @@ class AuthController extends Controller
         } catch (JWTException $e) {
             return response()->json(['authenticated' => false],422);
         }
-        $user = JWTAuth::parseToken()->authenticate()->id;
+        $user = JWTAuth::parseToken()->authenticate();
+        if ($user->login == 0){
+        $body = "Hello <b>".JWTAuth::parseToken()->authenticate()->first_name. " ".JWTAuth::parseToken()->authenticate()->last_name. ",</b><br/>Welcome to Rubix Music Community - The First online community for music makers and lovers. Our Basic functionalities
+        allows you to <i>search users, check a user profile, edit your profile, send connect requests, accept or decline connect requests, block connects, message connects, view suggestions of people you may know based on
+        mutual connects and location all in real time. Your feeds lets you view posts, likes, comments and shares by connect in real time, you can create a post, like a post, comment or share a post
+        and its all broadcasted in real time</i>. We would leave you to explore other functionalities and hope you have fun while doing that.<br/><b>N.B: Replies to this message would not be delivered.<b> <br/>Regards, <b>Rubix team</b.." ;
+        $conversation = \App\Conversation::create([
+            'user_one' => \App\User::find(1)->id,
+            'user_two' => JWTAuth::parseToken()->authenticate()->id,
+            'status' => 1,
+        ]);
+        $message = \App\Message::create([
+            'message' => $body,
+            'conversation_id' => $conversation->id,
+            'user_id' => \App\User::find(1)->id,
+            'is_seen' => 0,
+        ]);
+        $user->login = 1;
+        $user->save();
+        }
         $threads = Talk::user(auth()->user()->id)->threads();
         $unread = 0;
         if ($threads){
             foreach($threads as $thread) {
+                if ($user->id != $thread->thread->sender->id && $thread->thread->is_seen == 0){
                 $unread = $unread + $thread->unread;
+                }
             }
         }
+        $user = JWTAuth::parseToken()->authenticate()->id;
         return response()->json(compact('user', 'unread'), 201);
     }
 
@@ -148,11 +171,15 @@ class AuthController extends Controller
         $profile->email = request('email');
         $profile->gender = request('gender');
         //$profile->first_name = request('first_name');
-        $profile->headline = request('headline');
         //$profile->last_name = request('last_name');
         $profile->age = request('age');
         $profile->phone = request('phone');
         $user->profile()->save($profile);
+       // $credentials = $request->only('email', 'password');
+        //$token = JWTGuard::tokenById($user->id);
+        //$token = JWTAuth::setToken($token);
+        //JWTAuth::authenticate($token);
+        //Talk::user(auth()->user()->id)->sendMessageByUserId($user->id, $body);
         $user->notify(new Activation($user));
 
         return response()->json(['message' => 'You have been registered successfully. Please check your email for activation!']);

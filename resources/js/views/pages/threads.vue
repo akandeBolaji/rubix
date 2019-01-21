@@ -21,12 +21,14 @@
              <span v-if="thread.thread.message">
             <span v-if="thread.thread.message.length >= 40">
                  <span v-if="user.id == thread.thread.sender.id">You : {{thread.thread.message.substring(0, 40)}} ...</span>
+                 <span v-else-if="thread.thread.sender.type == 'admin'" v-html="thread.thread.message.substring(0, 50)"></span>
                  <span v-else>
                      {{thread.thread.message.substring(0, 40)}} ...
                   </span>
             </span>
              <span v-else>
                <span v-if="user.id == thread.thread.sender.id">You : {{thread.thread.message}}</span>
+               <span v-else-if="thread.thread.sender.type == 'admin'" v-html="thread.thread.message"></span>
                <span v-else>{{thread.thread.message}}</span>
              </span>
              </span>

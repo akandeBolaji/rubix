@@ -49,9 +49,9 @@ class UserController extends Controller
         //$query = $request->query('query');
 
         $user = \App\User::whereRaw("CONCAT(first_name, ' ', last_name) LIKE '%$request->keywords%'")->
-        orWhereRaw("CONCAT(last_name, ' ', first_name) LIKE '%$request->keywords%'")->get();
-        $users = \App\User::whereRaw("CONCAT(first_name, ' ', last_name) LIKE '%$request->keywords%'")->
-        orWhereRaw("CONCAT(last_name, ' ', first_name) LIKE '%$request->keywords%'")->
+        orWhereRaw("CONCAT(last_name, ' ', first_name) LIKE '%$request->keywords%'")->where('type', '!=', 'admin')->get();
+        $users = \App\User::where('type', '!=', 'admin')->whereRaw("CONCAT(first_name, ' ', last_name) LIKE '%$request->keywords%'")->
+        orWhereRaw("CONCAT(last_name, ' ', first_name) LIKE '%$request->keywords%'")->where('type', '!=', 'admin')->
         paginate(20);
         //whereRaw('concat(\'first_name\', \'last_name\')', 'LIKE', '%' . $request->keywords . '%');
 
@@ -61,6 +61,10 @@ class UserController extends Controller
     public function getUser($id){
         $auth = JWTAuth::parseToken()->authenticate();
         $user = \App\User::find($id);
+          $admin =\App\User::where('id', $user->id)->where('type', 'admin')->count();
+          if ($admin > 0)
+          return response()->json( ['message' => "You cannot view an admin"], 422 );
+
         if($auth == $user){
             $status = 'user';
             $friends_count = $user->getFriendsCount();

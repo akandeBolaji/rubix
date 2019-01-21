@@ -11,7 +11,7 @@
       <v-card>
           <v-card-text>
           <v-layout>
-          <v-flex @click="showUser(post.user.id)" xs2 sm1 md1>
+          <v-flex @click="showUser(post.user)" xs2 sm1 md1>
             <v-avatar
              v-if="post.user && post.user.avatar"
             color="grey lighten-4"
@@ -28,7 +28,7 @@
               >account_circle</v-icon>
           </v-flex>
 
-          <v-flex @click="showUser(post.user.id)" sm11 md10 xs10>
+          <v-flex @click="showUser(post.user)" sm11 md10 xs10>
              <strong><b>{{ post.user.first_name + " " + post.user.last_name }}</b></strong><br/><span  v-if="post.user.headline"> {{post.user.headline}} <br/> </span> {{ post.createdDate }}
           </v-flex>
         </v-layout>
@@ -331,7 +331,7 @@ export default {
                     console.log('share the post to others');
             },
                 showUser(data){
-                    if (data != this.user.id) {
+                    if (data.id != this.user.id && data.type != 'admin') {
                     this.$router.push(`/user/${data}`);
                     console.log('show the user information');
                     }

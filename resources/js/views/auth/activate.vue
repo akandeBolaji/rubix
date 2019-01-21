@@ -2,9 +2,11 @@
    <v-app id="inspire">
     <v-content>
         <v-toolbar fixed dense>
-         <v-toolbar-title class="blue--text">Rubix</v-toolbar-title>
-         <v-spacer></v-spacer>
          <v-toolbar-side-icon class="hidden-md-and-up"></v-toolbar-side-icon>
+         <v-spacer></v-spacer>
+         <v-container fluid fill-height align-center justify-center>
+              <v-toolbar-title class="blue--text">Rubix</v-toolbar-title>
+            </v-container>
        </v-toolbar>
                  <v-container fluid fill-height align-center justify-center>
                 <v-btn @click="login" class="white--text" color="blue" >Go back to Login</v-btn>

@@ -20,9 +20,11 @@
       </v-list>
     </v-navigation-drawer>
         <v-toolbar>
-         <v-toolbar-title class="blue--text">Rubix</v-toolbar-title>
+          <v-toolbar-side-icon class="hidden-md-and-up" @click.stop="drawer = !drawer"></v-toolbar-side-icon>
          <v-spacer></v-spacer>
-         <v-toolbar-side-icon class="hidden-md-and-up" @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+         <v-container fluid fill-height align-center justify-center>
+              <v-toolbar-title class="blue--text">Rubix</v-toolbar-title>
+            </v-container>
          <div class="hidden-sm-and-down">
          <v-btn @click="login" class="white--text" color="blue">Login</v-btn>
         </div>

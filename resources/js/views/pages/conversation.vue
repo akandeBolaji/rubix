@@ -4,8 +4,8 @@
     <v-icon @click="goBack" dark>arrow_back</v-icon>
     <v-toolbar-title class="white--text" v-if="this.users.first_name" >{{ this.users.first_name + " " + this.users.last_name}}
         <span v-show="typing"><b><i>is typing</i></b></span><br/>
-        <span v-if="online"><i>Online</i></span>
-        <span v-else><i style="font-size:12px;">last seen {{ this.computedLastSeen }}</i></span>
+        <span v-if="online && this.users.last_seen"><i>Online</i></span>
+        <span v-else-if="this.users.last_seen"><i style="font-size:12px;">last seen {{ this.computedLastSeen }}</i></span>
     </v-toolbar-title>
 </v-toolbar>
 <v-container  :style="{ maxHeight: winHeight}" class="scroll-y" mt-5 mb-5>
@@ -284,7 +284,13 @@ export default {
 
                     //this.page = this.page + 1;
                 }).catch(error => {
-                    $state.error();
+                    if (error.msg = "Not Allowed") {
+                         this.$router.go(-1);
+                    }
+                    else {
+                       $state.error();
+                    }
+                    //
                 });
 },
             rndStr(len) {

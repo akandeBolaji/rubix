@@ -32,7 +32,7 @@ class MessageController extends Controller
     public function getMessage($id, $page){
         $authuser = JWTAuth::parseToken()->authenticate();
         $user = User::find($id);
-        if (!$authuser->isFriendWith($user)) {
+        if (!$authuser->isFriendWith($user)  && $user->type == 'user') {
             return response()->json(['msg' => 'Not Allowed'], 401);
         }
         if ($page == 50){
@@ -67,7 +67,7 @@ class MessageController extends Controller
          $userId = $request->id;
          $authuser = JWTAuth::parseToken()->authenticate();
          $use = User::find($userId);
-         if (!$authuser->isFriendWith($use)) {
+         if (!$authuser->isFriendWith($use) && $use->type == 'user') {
              return response()->json(['msg' => 'Not Allowed'], 401);
          }
          if ($message = Talk::sendMessageByUserId($userId, $body)) {

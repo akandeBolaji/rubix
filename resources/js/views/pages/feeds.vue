@@ -22,7 +22,7 @@
           <v-flex xs2 sm1 md1>
             <v-avatar
              v-if="post.user && post.user.avatar"
-            @click="showUser(post.user.id)"
+            @click="showUser(post.user)"
             color="grey lighten-4"
             >
               <img
@@ -31,14 +31,14 @@
               >
             </v-avatar>
               <v-icon
-                @click="showUser(post.user.id)"
+                @click="showUser(post.user)"
               large
               style="font-size: 50px;"
                 v-else
               >account_circle</v-icon>
           </v-flex>
 
-          <v-flex @click="showUser(post.user.id)" sm10 md10 xs9>
+          <v-flex @click="showUser(post.user)" sm10 md10 xs9>
              <strong><b>{{ post.user.first_name + " " + post.user.last_name }}</b></strong><br/><span  v-if="post.user.headline"> {{post.user.headline}} <br/> </span> {{ getTime(post.created_at) }}
           </v-flex>
           <v-flex sm1 md1 xs1>
@@ -256,7 +256,7 @@ export default {
            console.log('go to post page');
        },
         showUser(data){
-            if (data != this.user.id) {
+            if (data.id != this.user.id && data.type != 'admin') {
              this.$router.push(`/user/${data}`);
             console.log('show the user information');
             }
@@ -397,7 +397,8 @@ export default {
                         let friendscomment = response.data.friendcomments.data;
                         let friendshares = response.data.friendshares.data;
                         let userpost = response.data.userpost.data;
-                        let all = _.concat(friendscomment, friendslike, friendshares, friendspost, userpost);
+                        let adminpost = response.data.adminpost.data;
+                        let all = _.concat(friendscomment, friendslike, adminpost, friendshares, friendspost, userpost);
                         let alls = _.orderBy(all, ['created_at'], ['desc']);
                         //let alls = _.orderBy(_.uniqBy([alls], 'id'), ['created_at'], ['desc']);
                         let unique =_.uniqBy(alls.id, 'id');
@@ -409,9 +410,10 @@ export default {
                          let friendspost = response.data.friendspost.data;
                         let friendslike = response.data.friendlikes.data;
                         let friendshares = response.data.friendshares.data;
+                        let adminpost = response.data.adminpost.data;
                         let friendscomment = response.data.friendcomments.data;
                         let userpost = response.data.userpost.data;
-                        let all = _.concat(friendscomment, friendslike, friendshares, friendspost, userpost);
+                        let all = _.concat(friendscomment, friendslike, adminpost, friendshares, friendspost, userpost);
                         let alls = _.orderBy(all, ['created_at'], ['desc']);
                         //let alls = _.orderBy(_.uniqBy([alls], 'id'), ['created_at'], ['desc']);
                         let unique =_.uniqBy(alls, 'id');
@@ -424,7 +426,7 @@ export default {
 
                     //this.page = this.page + 1;
                 }).catch(error => {
-                    $state.complete();
+                    $state.error();
                 });
 },
 

@@ -2,9 +2,10 @@
   <v-app id="inspire">
     <v-content>
           <v-toolbar fixed>
-         <v-toolbar-title class="blue--text">Rubix</v-toolbar-title>
-         <v-spacer></v-spacer>
-         <v-toolbar-side-icon class="hidden-md-and-up" @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+            <v-toolbar-side-icon class="hidden-md-and-up" @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+          <v-container fluid fill-height align-center justify-center>
+              <v-toolbar-title class="blue--text">Rubix</v-toolbar-title>
+            </v-container>
          <div class="hidden-sm-and-down">
          <v-btn @click="register" class="white--text" color="blue">Register</v-btn>
         </div>
