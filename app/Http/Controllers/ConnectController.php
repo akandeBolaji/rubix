@@ -58,7 +58,7 @@ class ConnectController extends Controller
         //$friendships = $user->getAllFriendships();
         //$friends = $user->getFriends()->count();
         $friends_id = $user->getFriends()->pluck('id');
-        $admins_id =\App\User::whereIn('type', 'admin')->get()->pluck('id');
+        $admins_id =\App\User::where('type', 'admin')->get()->pluck('id');
         $pending_friendships = $user->getPendingFriendships()->where('recipient_id', '!=', $user->id)->pluck('recipient_id');
         //$accepted_requests = $user->getAcceptedFriendships();
         $denied_requests = $user->getDeniedFriendships()->pluck('recipient_id');
