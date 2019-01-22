@@ -33,12 +33,16 @@ mix.webpackConfig({
            // '/': ['resources/views/layouts/master.blade.php'],
             // '/posts': ['resources/views/posts.blade.php']
         },
-        staticFileGlobsIgnorePatterns: [/\.map$/, /mix-manifest\.json$/, /manifest\.json$/],
+        staticFileGlobsIgnorePatterns: [/\.map$/],
         navigateFallback: '/',
         runtimeCaching: [
             {
+                //urlPattern: new RegExp('https://fonts.googleapis.com/css?family=Material+Icons'),
                 urlPattern: /^https:\/\/fonts\.googleapis\.com\/css\?family\=Material\+Icons/,
-                handler: 'cacheFirst'
+                handler: 'cacheFirst',
+                options: {
+                    cacheName: 'fonts'
+                  }
              },
              //{
                 //urlPattern: /^https:\/\/(\d+)\.media\.tumblr\.com\//,
