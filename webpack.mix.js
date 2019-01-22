@@ -37,8 +37,8 @@ mix.webpackConfig({
         navigateFallback: '/',
         runtimeCaching: [
             {
-                //urlPattern: new RegExp('https://fonts.googleapis.com/css?family=Material+Icons'),
-                urlPattern: /^https:\/\/fonts\.googleapis\.com\/css\?family\=Material\+Icons/,
+                urlPattern: new RegExp('https://fonts.'),
+                //urlPattern: /^https:\/\/fonts\.googleapis\.com\/css\?family\=Material\+Icons/,
                 handler: 'cacheFirst',
                 options: {
                     cacheName: 'fonts'
