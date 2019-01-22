@@ -123,7 +123,9 @@ export default {
      getTime(time){
          var timezone = moment.tz.guess();
          console.log(timezone);
-       return moment(time).tz(timezone).format('LT');
+          return moment.utc(time).local().format('LT')
+        //return moment(time).tz(timezone).format('LT');
+        //return moment().utc(timezone).local().format('LT');
      },
      messageImage(data){
            return '/message_images/' + data;

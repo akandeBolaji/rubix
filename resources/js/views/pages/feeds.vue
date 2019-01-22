@@ -257,7 +257,7 @@ export default {
        },
         showUser(data){
             if (data.id != this.user.id && data.type != 'admin') {
-             this.$router.push(`/user/${data}`);
+             this.$router.push(`/user/${data.id}`);
             console.log('show the user information');
             }
        },
@@ -401,7 +401,7 @@ export default {
                         let all = _.concat(friendscomment, friendslike, adminpost, friendshares, friendspost, userpost);
                         let alls = _.orderBy(all, ['created_at'], ['desc']);
                         //let alls = _.orderBy(_.uniqBy([alls], 'id'), ['created_at'], ['desc']);
-                        let unique =_.uniqBy(alls.id, 'id');
+                        let unique =_.uniqBy(alls, 'id');
                         console.log(alls);
                         console.log(unique);
                         this.post.push(...unique);
@@ -433,7 +433,9 @@ export default {
  getTime(time){
          var timezone = moment.tz.guess();
          console.log(timezone);
-       return moment(time).tz(timezone).fromNow();
+        return moment.utc(time).local().fromNow();
+       //return moment(time).tz(timezone).fromNow();
+       //return moment().utc(timezone).local().fromNow();
      },
 
     fetchAuthenticatedUser() {

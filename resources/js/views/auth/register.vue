@@ -19,7 +19,7 @@
         </v-list-tile>
       </v-list>
     </v-navigation-drawer>
-        <v-toolbar>
+        <v-toolbar fixed>
           <v-toolbar-side-icon class="hidden-md-and-up" @click.stop="drawer = !drawer"></v-toolbar-side-icon>
          <v-spacer></v-spacer>
          <v-container fluid fill-height align-center justify-center>
@@ -29,7 +29,7 @@
          <v-btn @click="login" class="white--text" color="blue">Login</v-btn>
         </div>
        </v-toolbar>
-      <v-container fluid fill-height>
+      <v-container mt-5 mb-5 fluid fill-height>
         <v-layout align-center justify-center>
           <v-flex xs12 sm8 md4>
             <v-card class="elevation-12">
@@ -71,7 +71,7 @@
           </v-flex>
         </v-layout>
       </v-container>
-      <v-footer height="auto" color="blue">
+      <v-footer fixed height="auto" color="blue">
            <v-layout
       justify-center
       row

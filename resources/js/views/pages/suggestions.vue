@@ -4,6 +4,7 @@
         <v-layout>
         <v-flex xs10>
         <v-avatar
+         @click="showUser(user)"
              v-if="user.avatar"
             size="70px"
             >
@@ -13,6 +14,7 @@
               >
             </v-avatar>
               <v-icon
+               @click="showUser(user)"
               large
               style="font-size: 80px;"
                 v-else
@@ -53,10 +55,10 @@ export default {
   },
   methods: {
       showUser(data){
-            if (data.id != this.user.id && data.type != 'admin') {
-             this.$router.push(`/user/${data}`);
+            //if (data.id != this.user.id && data.type != 'admin') {
+             this.$router.push(`/user/${data.id}`);
             console.log('show the user information');
-            }
+            //}
        },
       userPic(data){
          return '/images/users/' + data;

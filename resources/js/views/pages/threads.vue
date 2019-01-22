@@ -53,12 +53,13 @@
              <span style="color:blue;"><i>typing</i></span>
           </v-flex>
           <v-flex v-else align-center justify-center layout text-xs-center xs4>
-              {{ thread.thread.createdDate }}
+              {{ getTime(thread.thread.created_at)}}
           </v-flex>
           <v-divider></v-divider>
     </v-layout>
 </template>
 <script>
+var moment = require('moment-timezone');
 export default {
     props:['thread', 'user'],
      data () {
@@ -67,6 +68,13 @@ export default {
     }
   },
   methods: {
+      getTime(time){
+         var timezone = moment.tz.guess();
+         console.log(timezone);
+          return moment.utc(time).local().format('LT')
+        //return moment(time).tz(timezone).format('LT');
+        //return moment().utc(timezone).local().format('LT');
+     },
        userPic(data){
          return '/images/users/' + data;
      },

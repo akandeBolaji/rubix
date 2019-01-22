@@ -159,7 +159,7 @@ class AuthController extends Controller
             'first_name' => request('first_name'),
             'last_name' => request('last_name'),
             'headline' => request('headline'),
-            'password' => bcrypt(request('password'))
+            'password' => bcrypt(request('password')),
         ]);
 
         do {

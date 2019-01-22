@@ -117,11 +117,6 @@ let routes = [
         meta: { requiresGuest: true },
     },
 
-    {
-        path: '/about-us',
-        component: require('./views/pages/about'),
-    },
-
 
     {
         path: '/auth/:token/activate',

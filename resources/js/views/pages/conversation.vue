@@ -269,7 +269,7 @@ export default {
                            // _this.scrollToEnd();
                        // }
                         _this.page += 50;
-                    // _this.scrollToEnd();
+                     _this.scrollToEnd();
                         $state.loaded();
                      }else {
                          let result = _.orderBy(response.data.msg, ['created_at'], ['asc']);
@@ -277,7 +277,7 @@ export default {
                         //if (_this.page == 50){
                           //  _this.scrollToEnd();
                         //}
-                    // _this.scrollToEnd();
+                       _this.scrollToEnd();
                         $state.complete();
                         _this.infinite = false;
                      }
@@ -311,7 +311,7 @@ export default {
                 this.user.sender.avatar = this.authuser.avatar;
                 this.user.sendstats = this.rndStr(5);
                 this.user.sendstatus = 'sending';
-                this.user.createdDate = moment().format('LT');
+                this.user.createdDate = moment.utc().format('LT');
                 this.user.file = file.name;
                 this.sending = this.user.sendstats;
                 this.message.push(this.user);
@@ -346,7 +346,7 @@ export default {
             this.user.sender.first_name = this.authuser.first_name;
                 this.user.sender.last_name = this.authuser.last_name;
                 this.user.sender.avatar = this.authuser.avatar;
-                this.user.createdDate = moment().format('LT');
+                this.user.createdDate = moment.utc().format('LT');
                 this.user.sendstats = this.rndStr(5);
                 this.user.sendstatus = 'sending';
                 this.user.sender.id = this.authuser.id;
@@ -426,7 +426,7 @@ export default {
                 this.user.sender.last_name = this.authuser.last_name;
                  this.user.sender.id = this.authuser.id;
                  this.user.sender.avatar = this.authuser.avatar;
-                this.user.createdDate = moment().format('LT');
+                 this.user.createdDate = moment.utc().format('LT');
                 this.message.push(this.user);
                 var container = this.$el.querySelector(".container");
                 this.scrollToEnd();

@@ -1,6 +1,6 @@
 {
-    "short_name": "Polibet",
-    "name": "Polibet",
+    "short_name": "Rubix",
+    "name": "Rubix",
     "theme_color": "#fff",
     "background_color": "#fff",
     "display": "standalone",
@@ -56,6 +56,6 @@
         "sizes": "512x512"
       }
     ],
-    "start_url": "http://polibet.site/",
+    "start_url": "https://rubixmusik.com/",
     "orientation": "portrait"
   }

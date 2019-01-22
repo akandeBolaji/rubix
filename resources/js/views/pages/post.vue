@@ -29,7 +29,7 @@
           </v-flex>
 
           <v-flex @click="showUser(post.user)" sm11 md10 xs10>
-             <strong><b>{{ post.user.first_name + " " + post.user.last_name }}</b></strong><br/><span  v-if="post.user.headline"> {{post.user.headline}} <br/> </span> {{ post.createdDate }}
+             <strong><b>{{ post.user.first_name + " " + post.user.last_name }}</b></strong><br/><span  v-if="post.user.headline"> {{post.user.headline}} <br/> </span> {{ getTime(post.created_at) }}
           </v-flex>
         </v-layout>
           </v-card-text>
@@ -263,6 +263,13 @@ export default {
         },
 
         methods: {
+            getTime(time){
+         var timezone = moment.tz.guess();
+         console.log(timezone);
+        return moment.utc(time).local().fromNow();
+       //return moment(time).tz(timezone).fromNow();
+       //return moment().utc(timezone).local().fromNow();
+     },
             commentRef() {
             this.$refs.comment.focus();
             },
@@ -332,7 +339,7 @@ export default {
             },
                 showUser(data){
                     if (data.id != this.user.id && data.type != 'admin') {
-                    this.$router.push(`/user/${data}`);
+                    this.$router.push(`/user/${data.id}`);
                     console.log('show the user information');
                     }
             },
