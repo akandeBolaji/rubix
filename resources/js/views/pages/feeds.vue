@@ -19,7 +19,7 @@
           <v-divider></v-divider>
           <v-card-text>
           <v-layout>
-          <v-flex xs2 sm1 md1>
+          <v-flex xs2 sm2 md2>
             <v-avatar
              v-if="post.user && post.user.avatar"
             @click="showUser(post.user)"

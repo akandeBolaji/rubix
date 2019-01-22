@@ -11,7 +11,7 @@
       <v-card>
           <v-card-text>
           <v-layout>
-          <v-flex @click="showUser(post.user)" xs2 sm1 md1>
+          <v-flex @click="showUser(post.user)" xs2 sm2 md2>
             <v-avatar
              v-if="post.user && post.user.avatar"
             color="grey lighten-4"

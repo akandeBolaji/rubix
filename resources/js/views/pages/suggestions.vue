@@ -28,7 +28,7 @@
         </v-flex>
         </v-layout>
         </v-card-title>
-          <v-card-text v-if="user.first_name">
+          <v-card-text @click="showUser(user)" v-if="user.first_name">
              <b>{{ user.first_name + " " + user.last_name }}</b> <br/>
              <span v-if="user.headline.length < 15">{{user.headline}}</span>
              <span v-if="user.headline.length > 15">{{user.headline.substring(0, 15)}}...</span>
@@ -52,6 +52,12 @@ export default {
     }
   },
   methods: {
+      showUser(data){
+            if (data.id != this.user.id && data.type != 'admin') {
+             this.$router.push(`/user/${data}`);
+            console.log('show the user information');
+            }
+       },
       userPic(data){
          return '/images/users/' + data;
      },
