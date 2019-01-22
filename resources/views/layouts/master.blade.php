@@ -9,9 +9,10 @@
 	    <meta name="author" content="">
 	    <title>Rubix</title>
 	    <meta name="csrf-token" content="{{ csrf_token() }}" />
-        <link rel="shortcut icon" href="/images/favi/rubix.png">
+        <link rel="shortcut icon" href="/images/rubix.png">
         <link rel="manifest" href="{{url('/manifest.json')}}">
         <link href="/css/loaderone.css" type="text/css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Material+Icons" rel="stylesheet">
 
 	    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 	    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->

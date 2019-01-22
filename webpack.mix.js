@@ -22,7 +22,7 @@ mix.webpackConfig({
     new SWPrecacheWebpackPlugin({
         cacheId: 'pwa',
         filename: 'service-worker.js',
-        staticFileGlobs: ['public/**/*.{css,png,img,js,html}', 'fonts/**/*.{eot,svg,ttf,woff,woff2}'],
+        staticFileGlobs: ['public/**/*.{css,png,img,js,html}', 'public/fonts/vendor/**/*.{eot,svg,ttf,woff,woff2}'],
         minify: true,
         stripPrefix: 'public/',
         maximumFileSizeToCacheInBytes: 3497152,
@@ -36,10 +36,10 @@ mix.webpackConfig({
         staticFileGlobsIgnorePatterns: [/\.map$/, /mix-manifest\.json$/, /manifest\.json$/, /service-worker\.js$/],
         navigateFallback: '/',
         runtimeCaching: [
-           // {
-                //urlPattern: /^https:\/\/thecatapi\.com\/api\/images\/get\.php\?id/,
-               // handler: 'cacheFirst'
-            // },
+            {
+                urlPattern: /^https:\/\/fonts\.googleapis\.com\/css\?family\=Material\+Icons/,
+                handler: 'cacheFirst'
+             },
              //{
                 //urlPattern: /^https:\/\/(\d+)\.media\.tumblr\.com\//,
               //  handler: 'cacheFirst'
