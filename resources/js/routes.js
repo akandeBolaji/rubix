@@ -132,7 +132,7 @@ let routes = [
 
     {
         path: '*',
-        component : require('./views/errors/page-not-found'),
+        redirect: '/',
     }
 ];
 
@@ -150,6 +150,8 @@ router.beforeEach((to, from, next) => {
                 return next({ path : '/login'})
             }
             return next();
+        }).catch (error => {
+            return next();
         })
     }
 
@@ -158,6 +160,8 @@ router.beforeEach((to, from, next) => {
             if(response){
                 return next({ path : '/feeds'})
             }
+            return next();
+        }).catch (error => {
             return next();
         })
     }

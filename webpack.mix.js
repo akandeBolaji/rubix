@@ -22,9 +22,10 @@ mix.webpackConfig({
     new SWPrecacheWebpackPlugin({
         cacheId: 'pwa',
         filename: 'service-worker.js',
-        staticFileGlobs: ['public/**/*.{css,eot,svg,ttf,woff,woff2,js,html}'],
+        staticFileGlobs: ['public/**/*.{css,png,img,eot,svg,ttf,woff,woff2,js,html}'],
         minify: true,
         stripPrefix: 'public/',
+        maximumFileSizeToCacheInBytes: 3497152,
         handleFetch: true,
         dynamicUrlToDependencies: { //you should add the path to your blade files here so they can be cached
         							//and have full support for offline first (example below)
@@ -35,14 +36,14 @@ mix.webpackConfig({
         staticFileGlobsIgnorePatterns: [/\.map$/, /mix-manifest\.json$/, /manifest\.json$/, /service-worker\.js$/],
         navigateFallback: '/',
         runtimeCaching: [
-            {
-                urlPattern: /^https:\/\/fonts\.googleapis\.com\//,
-                handler: 'cacheFirst'
-            },
-            {
-                urlPattern: /^https:\/\/www\.thecocktaildb\.com\/images\/media\/drink\/(\w+)\.jpg/,
-                handler: 'cacheFirst'
-            }
+           // {
+                //urlPattern: /^https:\/\/thecatapi\.com\/api\/images\/get\.php\?id/,
+               // handler: 'cacheFirst'
+            // },
+             //{
+                //urlPattern: /^https:\/\/(\d+)\.media\.tumblr\.com\//,
+              //  handler: 'cacheFirst'
+            // },
         ],
         // importScripts: ['./js/push_message.js']
     })

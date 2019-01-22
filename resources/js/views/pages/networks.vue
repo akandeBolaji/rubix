@@ -166,7 +166,7 @@ export default {
 
                     //this.page = this.page + 1;
                 }).catch(error => {
-                    //$state.complete();
+                    $state.error();
                 });
 },
       doSomething(value) {

@@ -415,7 +415,7 @@ export default {
                         this.infinite = false;
 
                 }).catch(error => {
-                    //$state.complete();
+                    $state.error();
                 });
     },
     fetchAuthenticatedUser() {
