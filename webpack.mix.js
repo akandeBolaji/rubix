@@ -22,7 +22,7 @@ mix.webpackConfig({
     new SWPrecacheWebpackPlugin({
         cacheId: 'pwa',
         filename: 'service-worker.js',
-        staticFileGlobs: ['public/**/*.{css,png,img,eot,svg,ttf,woff,woff2,js,html}'],
+        staticFileGlobs: ['public/**/*.{css,png,img,js,html}', 'fonts/**/*.{eot,svg,ttf,woff,woff2}'],
         minify: true,
         stripPrefix: 'public/',
         maximumFileSizeToCacheInBytes: 3497152,
