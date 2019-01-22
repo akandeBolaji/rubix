@@ -315,7 +315,7 @@ export default {
                 });
             },
             playerOption(data) {
-                const source = 'http://rubix.site/post_videos/' + data;
+                const source = '/post_videos/' + data;
                 return {
                     url: source,
                     keyShortcut: 'off',
@@ -340,14 +340,14 @@ export default {
                     console.log('view the image of the post');
             },
             userPic(data){
-                return 'http://rubix.site/images/users/' + data;
+                return '/images/users/' + data;
             },
 
             postImage(data){
-                return 'http://rubix.site/post_images/' + data;
+                return '/post_images/' + data;
             },
             postVideo(data){
-                return 'http://rubix.site/post_videos/' + data;
+                return '/post_videos/' + data;
             },
             goBack(){
                 this.$router.push('/feeds');

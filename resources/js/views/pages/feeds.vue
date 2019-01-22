@@ -222,7 +222,7 @@ export default {
           value.comments.push(1);
        },
       playerOption(data) {
-           const source = 'http://rubix.site/post_videos/' + data;
+           const source = '/post_videos/' + data;
            return {
                download: true,
                airplay: true,
@@ -440,14 +440,14 @@ export default {
       this.$store.dispatch( 'getUser');
     },
      userPic(data){
-         return 'http://rubix.site/images/users/' + data;
+         return '/images/users/' + data;
      },
 
      postImage(data){
-           return 'http://rubix.site/post_images/' + data;
+           return '/post_images/' + data;
      },
      postVideo(data){
-           return 'http://rubix.site/post_videos/' + data;
+           return '/post_videos/' + data;
      },
      settPosts(data){
 
@@ -488,14 +488,14 @@ export default {
      postImages(){
        this.posts.forEach(function(post) {
          post.images.forEach(function(image) {
-           return 'http://rubix.site/post_images/' + image.path;
+           return '/post_images/' + image.path;
          });
        });
      },
      postVideos(){
        this.posts.forEach(function(post) {
          post.videos.forEach(function(video) {
-           return 'http://rubix.site/post_videos/' + video.path;
+           return '/post_videos/' + video.path;
          });
        });
      }

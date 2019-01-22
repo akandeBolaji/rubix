@@ -38,7 +38,7 @@ export default {
   },
   methods: {
        userPic(data){
-         return 'http://rubix.site/images/users/' + data;
+         return '/images/users/' + data;
      },
       acceptConnect(id){
         this.click = true;

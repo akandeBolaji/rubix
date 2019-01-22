@@ -88,7 +88,7 @@ export default {
   methods: {
     downloadFile(data){
         axios({
-        url: 'http://rubix.site/message_files/' + data,
+        url: '/message_files/' + data,
         method: 'GET',
         responseType: 'blob', // important
         }).then((response) => {
@@ -102,7 +102,7 @@ export default {
     },
     downloadImage(data){
         axios({
-        url: 'http://rubix.site/message_images/' + data,
+        url: '/message_images/' + data,
         method: 'GET',
         responseType: 'blob', // important
         }).then((response) => {
@@ -118,7 +118,7 @@ export default {
          this.$router.push('/networks');
      },
      userPic(data){
-         return 'http://rubix.site/images/users/' + data;
+         return '/images/users/' + data;
      },
      getTime(time){
          var timezone = moment.tz.guess();
@@ -126,7 +126,7 @@ export default {
        return moment(time).tz(timezone).format('LT');
      },
      messageImage(data){
-           return 'http://rubix.site/message_images/' + data;
+           return '/message_images/' + data;
      },
   },
   computed: {

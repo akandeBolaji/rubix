@@ -381,7 +381,7 @@ export default {
                 });
             },
              userPic(data){
-                return 'http://rubix.site/images/users/' + data;
+                return '/images/users/' + data;
             },
              computedMessag() {
               const messages = this.message;

@@ -75,7 +75,7 @@ export default {
                     console.log('show the user information');
             },
          userPic(data){
-                return 'http://rubix.site/images/users/' + data;
+                return '/images/users/' + data;
             },
 
          goBack(){

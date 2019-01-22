@@ -99,7 +99,7 @@ export default {
 
    methods: {
         posturl(data){
-        return `https://rubix.site/post/${data.id}`;
+        return `https://rubixmusik.com/post/${data.id}`;
        },
        title(data){
         return `A Post by ${data.user.first_name} ${data.user.last_name}`;

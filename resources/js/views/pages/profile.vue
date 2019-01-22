@@ -346,7 +346,7 @@ export default {
      profilePics(){
          const user =this.user;
         if (user && user.avatar){
-       return 'http://rubix.site/images/users/' + user.avatar;
+       return '/images/users/' + user.avatar;
         }
      }
 

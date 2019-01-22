@@ -53,7 +53,7 @@ export default {
   },
   methods: {
        userPic(data){
-         return 'http://rubix.site/images/users/' + data;
+         return '/images/users/' + data;
      },
       confirmRemove(name, last){
          this.infotext = "Are you sure you want to remove" + " " + name + " " + last + " " + "from your connections ?";

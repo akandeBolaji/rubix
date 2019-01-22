@@ -50,7 +50,7 @@ export default {
 
   methods: {
      userPic(data){
-         return 'http://rubix.site/images/users/' + data;
+         return '/images/users/' + data;
      },
         submit(post, data) {
             this.data.post_id = post;

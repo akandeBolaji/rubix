@@ -68,7 +68,7 @@ export default {
   },
   methods: {
        userPic(data){
-         return 'http://rubix.site/images/users/' + data;
+         return '/images/users/' + data;
      },
       openThread(id){
            //this.$router.push({ path: '/conversation', query: { id: this.$route.query.id }})
