@@ -402,8 +402,9 @@ export default {
                         let alls = _.orderBy(all, ['created_at'], ['desc']);
                         //let alls = _.orderBy(_.uniqBy([alls], 'id'), ['created_at'], ['desc']);
                         let unique =_.uniqBy(alls, 'id');
+                         let difference = [];
                        if (this.post > 0) {
-                        let difference = _.forEach(this.post, function(post) {
+                      difference = _.forEach(this.post, function(post) {
                                 _.remove(unique, function(n) {
                                 return n.id != post.id;
                                 });
@@ -426,8 +427,9 @@ export default {
                         let unique =_.uniqBy(alls, 'id');
                         console.log(alls);
                         console.log(unique);
+                        let difference = [];
                         if (this.post > 0) {
-                        let difference = _.forEach(this.post, function(post) {
+                        difference = _.forEach(this.post, function(post) {
                                 _.remove(unique, function(n) {
                                 return n.id != post.id;
                                 });
