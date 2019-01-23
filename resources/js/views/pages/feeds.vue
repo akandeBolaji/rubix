@@ -407,7 +407,9 @@ export default {
                              const checker = _.some(this.post, ['id', n.id]);
                                    return  !checker;
                                 });
+                                if (uniques.length != 0){
                                this.post.push(...uniques);
+                                }
                                 $state.loaded();
                        }
                        else {
@@ -435,7 +437,9 @@ export default {
                                   const checker = _.some(this.post, ['id', n.id]);
                                    return  !checker;
                                 });
+                                if (uniques.length != 0){
                                this.post.push(...uniques);
+                                }
                                 $state.loaded();
                        }
                        else {
