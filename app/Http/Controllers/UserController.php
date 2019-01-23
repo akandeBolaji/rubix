@@ -48,8 +48,8 @@ class UserController extends Controller
         }
         //$query = $request->query('query');
 
-        $user = \App\User::whereRaw("CONCAT(first_name, ' ', last_name) LIKE '%$request->keywords%'")->
-        orWhereRaw("CONCAT(last_name, ' ', first_name) LIKE '%$request->keywords%'")->where('type', '!=', 'admin')->get();
+        //$user = \App\User::whereRaw("CONCAT(first_name, ' ', last_name) LIKE '%$request->keywords%'")->
+        //orWhereRaw("CONCAT(last_name, ' ', first_name) LIKE '%$request->keywords%'")->where('type', '!=', 'admin')->get();
         $users = \App\User::where('type', '!=', 'admin')->whereRaw("CONCAT(first_name, ' ', last_name) LIKE '%$request->keywords%'")->
         orWhereRaw("CONCAT(last_name, ' ', first_name) LIKE '%$request->keywords%'")->where('type', '!=', 'admin')->where('id', '!=', $user->id)->
         paginate(20);
