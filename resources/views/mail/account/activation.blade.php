@@ -2,9 +2,9 @@
 Welcome to Rubix
 
 Thank you for registering an account with us.
+We would love you to click on the button below to verify your account and start communicating
 
 @component('mail::button', ['url' => $url, 'color' =>'blue'])
-We would love you to click on the button below to verify your account and start communicating
 Verify Account
 @endcomponent
 

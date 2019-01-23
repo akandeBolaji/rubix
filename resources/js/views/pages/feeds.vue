@@ -403,17 +403,19 @@ export default {
                         //let alls = _.orderBy(_.uniqBy([alls], 'id'), ['created_at'], ['desc']);
                         let unique =_.uniqBy(alls, 'id');
                        if (this.post != 0) {
-                          unique = _.filter(unique, function(n) {
-                                    _.forEach(this.post, function(post) {
-                                     return n.id != post.id;
-                                  });
+                         let uniques = _.filter(unique, function(n) {
+                                   return  !_.some(this.post, ['id', n.id]);
                                 });
-                                console.log(unique);
+                               this.post.push(...uniques);
+                                $state.loaded();
                        }
-                        console.log(alls);
-                        console.log(unique);
-                        this.post.push(...unique);
+                       else {
+                          this.post.push(...unique);
                         $state.loaded();
+                       }
+                        //console.log(alls);
+                        //console.log(unique);
+
                      }else {
                          let friendspost = response.data.friendspost.data;
                         let friendslike = response.data.friendlikes.data;
@@ -427,17 +429,17 @@ export default {
                         let unique =_.uniqBy(alls, 'id');
                         console.log(alls);
                         console.log(unique);
-                       if (this.post != 0) {
-                          unique = _.filter(unique, function(n) {
-                                    _.forEach(this.post, function(post) {
-                                     return n.id != post.id;
-                                  });
+                        if (this.post != 0) {
+                         let uniques = _.filter(unique, function(n) {
+                                   return  !_.some(this.post, ['id', n.id]);
                                 });
-                                console.log(unique);
+                               this.post.push(...uniques);
+                                $state.loaded();
                        }
-                        this.post.push(...unique);
-                        $state.complete();
-                        this.infinite = false;
+                       else {
+                          this.post.push(...unique);
+                        $state.loaded();
+                       }
                      }
 
                     //this.page = this.page + 1;
