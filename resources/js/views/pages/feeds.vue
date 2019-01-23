@@ -426,6 +426,13 @@ export default {
                         let unique =_.uniqBy(alls, 'id');
                         console.log(alls);
                         console.log(unique);
+                        if (this.post > 0) {
+                        let difference = _.forEach(this.post, function(post) {
+                                _.remove(unique, function(n) {
+                                return n.id != post.id;
+                                });
+                             });
+                       }
                         this.post.push(...unique);
                         $state.complete();
                         this.infinite = false;
