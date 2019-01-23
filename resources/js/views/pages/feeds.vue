@@ -11,10 +11,10 @@
       <v-container v-for="(post,index) in post" v-if="post.text && post.user" v-bind:key='index'>
       <v-card>
           <div v-if="post && post.friendcomments && post.type != 'admin' || post && post.friendlikes && post.type != 'admin' || post && post.friendshares && post.type != 'admin' ">
-          <v-card-text v-if="post && post.friendcomments && post.friendcomments.length > 0"><b>{{ post.friendcomments[0].first_name + " " + post.friendcomments[0].last_name }} commented on this post</b></v-card-text>
-          <v-card-text v-else-if="post && post.friendlikes && post.friendlikes.length == 1"><b> {{ post.friendlikes[0].first_name + " " + post.friendlikes[0].last_name }} liked this post</b></v-card-text>
-          <v-card-text v-else-if="post && post.friendlikes && post.friendlikes.length > 1"><b>{{ post.friendlikes[0].first_name + " " + post.friendlikes[0].last_name }} and {{ post.friendlikes.length - 1 }} other connects liked this post</b></v-card-text>
-          <v-card-text v-else-if="post && post.friendshares && post.friendshares.length > 1"><b>{{ post.friendshares[0].first_name + " " + post.friendshares[0].last_name }} shared a post</b></v-card-text>
+          <v-card-text v-if="post && post.friendcomments && post.friendcomments.length > 0 && post.type != 'admin'"><b>{{ post.friendcomments[0].first_name + " " + post.friendcomments[0].last_name }} commented on this post</b></v-card-text>
+          <v-card-text v-else-if="post && post.friendlikes && post.friendlikes.length == 1 && post.type != 'admin'"><b> {{ post.friendlikes[0].first_name + " " + post.friendlikes[0].last_name }} liked this post</b></v-card-text>
+          <v-card-text v-else-if="post && post.friendlikes && post.friendlikes.length > 1" && post.type != 'admin'><b>{{ post.friendlikes[0].first_name + " " + post.friendlikes[0].last_name }} and {{ post.friendlikes.length - 1 }} other connects liked this post</b></v-card-text>
+          <v-card-text v-else-if="post && post.friendshares && post.friendshares.length > 1 && post.type != 'admin'"><b>{{ post.friendshares[0].first_name + " " + post.friendshares[0].last_name }} shared a post</b></v-card-text>
           </div>
           <v-divider></v-divider>
           <v-card-text>
