@@ -402,9 +402,10 @@ export default {
                         let alls = _.orderBy(all, ['created_at'], ['desc']);
                         //let alls = _.orderBy(_.uniqBy([alls], 'id'), ['created_at'], ['desc']);
                         let unique =_.uniqBy(alls, 'id');
-                       if (this.post != 0) {
+                       if (this.post.length != 0) {
                          let uniques = _.filter(unique, function(n) {
-                                   return  !_.some(this.post, ['id', n.id]);
+                             const checker = _.some(this.post, ['id', n.id]);
+                                   return  !checker;
                                 });
                                this.post.push(...uniques);
                                 $state.loaded();
@@ -429,9 +430,10 @@ export default {
                         let unique =_.uniqBy(alls, 'id');
                         console.log(alls);
                         console.log(unique);
-                        if (this.post != 0) {
+                        if (this.post.length != 0) {
                          let uniques = _.filter(unique, function(n) {
-                                   return  !_.some(this.post, ['id', n.id]);
+                                  const checker = _.some(this.post, ['id', n.id]);
+                                   return  !checker;
                                 });
                                this.post.push(...uniques);
                                 $state.loaded();
