@@ -402,9 +402,9 @@ export default {
                         const alls = _.orderBy(all, ['created_at'], ['desc']);
                         //let alls = _.orderBy(_.uniqBy([alls], 'id'), ['created_at'], ['desc']);
                         const unique =_.uniqBy(alls, 'id');
-                         this.post.push(...unique);
-                        $state.loaded();
-                       /* if (this.post.length != 0) {
+                        // this.post.push(...unique);
+                        //$state.loaded();
+                        if (this.post.length != 0) {
                          const uniques = _.filter(unique, function(n) {
                              const checker = _.some(this.post, ['id', n.id]);
                                    return  !checker;
@@ -417,7 +417,7 @@ export default {
                        else {
                           this.post.push(...unique);
                         $state.loaded();
-                       } */
+                       }
                         //console.log(alls);
                         //console.log(unique);
 
@@ -434,9 +434,9 @@ export default {
                         const unique =_.uniqBy(alls, 'id');
                         console.log(alls);
                         console.log(unique);
-                         this.post.push(...unique);
-                        $state.loaded()
-                       /* if (this.post.length != 0) {
+                         //this.post.push(...unique);
+                        //$state.complete()
+                       if (this.post.length != 0) {
                          const uniques = _.filter(unique, function(n) {
                                   const checker = _.some(this.post, ['id', n.id]);
                                    return  !checker;
@@ -444,12 +444,12 @@ export default {
                                 if (uniques.length != 0){
                                this.post.push(...uniques);
                                 }
-                                $state.loaded();
+                                $state.complete();
                        }
                        else {
                           this.post.push(...unique);
-                        $state.loaded();
-                       } */
+                        $state.complete();
+                       }
 
                      }
 
