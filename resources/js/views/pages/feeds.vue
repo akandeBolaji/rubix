@@ -392,18 +392,18 @@ export default {
                         });
                 if (response.data.friendspost.last_page > this.page || response.data.friendlikes.last_page > this.page || response.data.friendcomments.last_page > this.page || response.data.userpost.last_page > this.page) {
                         this.page += 1;
-                        let friendspost = response.data.friendspost.data;
-                        let friendslike = response.data.friendlikes.data;
-                        let friendscomment = response.data.friendcomments.data;
-                        let friendshares = response.data.friendshares.data;
-                        let userpost = response.data.userpost.data;
-                        let adminpost = response.data.adminpost.data;
-                        let all = _.concat(friendscomment, friendslike, adminpost, friendshares, friendspost, userpost);
-                        let alls = _.orderBy(all, ['created_at'], ['desc']);
+                        const friendspost = response.data.friendspost.data;
+                        const friendslike = response.data.friendlikes.data;
+                        const friendscomment = response.data.friendcomments.data;
+                        const friendshares = response.data.friendshares.data;
+                        const userpost = response.data.userpost.data;
+                        const adminpost = response.data.adminpost.data;
+                        const all = _.concat(friendscomment, friendslike, adminpost, friendshares, friendspost, userpost);
+                        const alls = _.orderBy(all, ['created_at'], ['desc']);
                         //let alls = _.orderBy(_.uniqBy([alls], 'id'), ['created_at'], ['desc']);
-                        let unique =_.uniqBy(alls, 'id');
+                        const unique =_.uniqBy(alls, 'id');
                        if (this.post.length != 0) {
-                         let uniques = _.filter(unique, function(n) {
+                         const uniques = _.filter(unique, function(n) {
                              const checker = _.some(this.post, ['id', n.id]);
                                    return  !checker;
                                 });
@@ -418,20 +418,20 @@ export default {
                         //console.log(unique);
 
                      }else {
-                         let friendspost = response.data.friendspost.data;
-                        let friendslike = response.data.friendlikes.data;
-                        let friendshares = response.data.friendshares.data;
-                        let adminpost = response.data.adminpost.data;
-                        let friendscomment = response.data.friendcomments.data;
-                        let userpost = response.data.userpost.data;
-                        let all = _.concat(friendscomment, friendslike, adminpost, friendshares, friendspost, userpost);
-                        let alls = _.orderBy(all, ['created_at'], ['desc']);
+                         const friendspost = response.data.friendspost.data;
+                        const friendslike = response.data.friendlikes.data;
+                        const friendshares = response.data.friendshares.data;
+                        const adminpost = response.data.adminpost.data;
+                        const friendscomment = response.data.friendcomments.data;
+                        const userpost = response.data.userpost.data;
+                        const all = _.concat(friendscomment, friendslike, adminpost, friendshares, friendspost, userpost);
+                        const alls = _.orderBy(all, ['created_at'], ['desc']);
                         //let alls = _.orderBy(_.uniqBy([alls], 'id'), ['created_at'], ['desc']);
-                        let unique =_.uniqBy(alls, 'id');
+                        const unique =_.uniqBy(alls, 'id');
                         console.log(alls);
                         console.log(unique);
                         if (this.post.length != 0) {
-                         let uniques = _.filter(unique, function(n) {
+                         const uniques = _.filter(unique, function(n) {
                                   const checker = _.some(this.post, ['id', n.id]);
                                    return  !checker;
                                 });
