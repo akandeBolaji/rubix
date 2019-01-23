@@ -51,7 +51,7 @@ class UserController extends Controller
         $user = \App\User::whereRaw("CONCAT(first_name, ' ', last_name) LIKE '%$request->keywords%'")->
         orWhereRaw("CONCAT(last_name, ' ', first_name) LIKE '%$request->keywords%'")->where('type', '!=', 'admin')->get();
         $users = \App\User::where('type', '!=', 'admin')->whereRaw("CONCAT(first_name, ' ', last_name) LIKE '%$request->keywords%'")->
-        orWhereRaw("CONCAT(last_name, ' ', first_name) LIKE '%$request->keywords%'")->where('type', '!=', 'admin')->
+        orWhereRaw("CONCAT(last_name, ' ', first_name) LIKE '%$request->keywords%'")->where('type', '!=', 'admin')->where('id', '!=', $user->id)->
         paginate(20);
         //whereRaw('concat(\'first_name\', \'last_name\')', 'LIKE', '%' . $request->keywords . '%');
 
@@ -150,7 +150,7 @@ class UserController extends Controller
         $profile->phone = $request->input('profileData.phone');
         };
         if ($request->input('profileData.headline')){
-        $profile->headline = $request->input('profileData.headline');
+        $user->headline = $request->input('profileData.headline');
         };
         if ($request->input('profileData.date_of_birth')){
         $profile->date_of_birth = $request->input('profileData.date_of_birth');
@@ -170,6 +170,7 @@ class UserController extends Controller
         if ($request->input('profileData.google_plus_profile')){
         $profile->google_plus_profile = $request->input('profileData.google_plus_profile');
         };
+        $user->save();
         //$user->profile()->save($profile);
         $profile->save();
 

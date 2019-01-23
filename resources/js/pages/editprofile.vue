@@ -14,26 +14,26 @@
               <v-card-text>
                 <v-form>
                   <v-card-text><b>General Profile</b></v-card-text>
-                  <v-text-field v-if="userData && userData.headline" prepend-icon="work"  v-model="profile.headline" name="headline" :placeholder="userData.headline" label="Career Summary" type="text"></v-text-field>
+                  <v-text-field v-if="userData && userData.user && userData.user.headline" prepend-icon="work"  v-model="profile.headline" name="headline" :placeholder="userData.user.headline" label="Career Summary" type="text"></v-text-field>
                   <v-text-field v-else prepend-icon="work" v-model="profile.headline" data-vv-scope="profile" v-validate="'required|min:2'"  name="headline" label="Career Summary" type="text"></v-text-field>
                   <span :value="errors.has('profile.headline')" style="color:red">{{ errors.first('profile.headline') }}</span>
-                  <v-text-field v-if="userData.profile && userData.profile.phone" prepend-icon="phone" :placeholder="userData.profile.phone" v-model="profile.phone" name="phone" label="Your Phone number" type="text"></v-text-field>
+                  <v-text-field v-if="userData && userData.user && userData.user.profile.phone" prepend-icon="phone" :placeholder="userData.user.profile.phone" v-model="profile.phone" name="phone" label="Your Phone number" type="text"></v-text-field>
                   <v-text-field v-else prepend-icon="phone" data-vv-scope="profile" v-validate="'required|numeric'" v-model="profile.phone" name="phone" label="Your Phone number" type="text"></v-text-field>
                   <span :value="errors.has('profile.phone')"  style="color:red">{{ errors.first('profile.phone') }}</span>
-                  <v-text-field v-if="userData.profile && userData.profile.location" prepend-icon="location_city" v-model="profile.location" :placeholder="userData.profile.location" name="Location" label="Location" type="text"></v-text-field>
+                  <v-text-field v-if="userData && userData.user && userData.user.profile.location" prepend-icon="location_city" v-model="profile.location" :placeholder="userData.user.profile.location" name="Location" label="Location" type="text"></v-text-field>
                   <v-text-field v-else prepend-icon="location_city" data-vv-scope="profile" v-validate="'required'" v-model="profile.location" name="Location" label="Location" type="text"></v-text-field>
                   <span :value="errors.has('profile.Location')" style="color:red">{{ errors.first('profile.Location') }}</span>
-                  <v-text-field v-if="userData.profile && userData.profile.facebook_profile" prepend-icon="chat" :placeholder="userData.profile.facebook_profile" v-model="profile.facebook_profile"  label="Facebook Profile" name="Facebook Profile" type="text"></v-text-field>
+                  <v-text-field v-if="userData && userData.user && userData.user.profile.facebook_profile" prepend-icon="chat" :placeholder="userData.user.profile.facebook_profile" v-model="profile.facebook_profile"  label="Facebook Profile" name="Facebook Profile" type="text"></v-text-field>
                   <v-text-field v-else prepend-icon="chat" v-model="profile.facebook_profile"  label="Facebook Profile" name="Facebook Profile" type="text"></v-text-field>
-                  <v-text-field v-if="userData.profile && userData.profile.linkedin_profile" prepend-icon="people" :placeholder="userData.profile.linkedin_profile" label="Linkedin Profile" v-model="profile.linkedin_profile"  name="Linkedin Profile" type="text" ></v-text-field>
+                  <v-text-field v-if="userData && userData.user && userData.user.profile.linkedin_profile" prepend-icon="people" :placeholder="userData.user.profile.linkedin_profile" label="Linkedin Profile" v-model="profile.linkedin_profile"  name="Linkedin Profile" type="text" ></v-text-field>
                   <v-text-field v-else prepend-icon="people" label="Linkedin Profile" v-model="profile.linkedin_profile"  name="Linkedin Profile" type="text" ></v-text-field>
-                  <v-text-field v-if="userData.profile && userData.profile.twitter_profile" prepend-icon="chat_bubble" :placeholder="userData.profile.twitter_profile" name="Twitter Profile" v-model="profile.twitter_profile" label="Twitter Profile" type="text"></v-text-field>
+                  <v-text-field v-if="userData && userData.user && userData.user.profile.twitter_profile" prepend-icon="chat_bubble" :placeholder="userData.user.profile.twitter_profile" name="Twitter Profile" v-model="profile.twitter_profile" label="Twitter Profile" type="text"></v-text-field>
                   <v-text-field v-else prepend-icon="chat_bubble" name="Twitter Profile" v-model="profile.twitter_profile" label="Twitter Profile" type="text"></v-text-field>
 
                   <v-divider></v-divider>
 
-                    <v-card-text v-if="userData.skill != null && userData.skill != 0"><b>Existing Skills</b></v-card-text>
-                    <v-chip small v-for="(skill) in userData.skill" v-bind:key='skill.id'>
+                    <v-card-text v-if="userData && userData.user && userData.user.skills != null && userData.user.skills != 0"><b>Existing Skills</b></v-card-text>
+                    <v-chip small v-for="(skill) in userData.user.skills" v-bind:key='skill.id'>
                      <v-avatar :class="getRandomColor">{{skill.description.slice(0,1)}}</v-avatar>
                      {{skill.description}}
                      <v-icon  @click="deleteSkill( skill.id )" color="red" right>close</v-icon>
@@ -53,8 +53,8 @@
 
                   <v-divider></v-divider>
 
-                  <v-card-text v-if="userData.experience != null && userData.experience != 0"><b>Existing Experience</b></v-card-text>
-                   <v-list dense v-for="(experience) in userData.experience" v-bind:key='experience.id'>
+                  <v-card-text v-if="userData && userData.user && userData.user.experiences != null && userData.user.experiences != 0"><b>Existing Experience</b></v-card-text>
+                   <v-list dense v-for="(experience) in userData.user.experiences" v-bind:key='experience.id'>
                     <v-list-tile class="grey lighten-3">
                     <v-list-tile-content>Name of Organisation:</v-list-tile-content>
                     <v-list-tile-content class="align-end">{{ experience.name }}</v-list-tile-content>
@@ -98,8 +98,8 @@
 
                   <v-divider></v-divider>
 
-                  <v-card-text v-if="userData.accomplishment != 0 && userData.accomplishment != null"><b>Existing Work and Accomplishment</b></v-card-text>
-                   <v-list dense v-for="(accomplishment) in userData.accomplishment" v-bind:key='accomplishment.id'>
+                  <v-card-text v-if="userData && userData.user && userData.user.accomplishments != 0 && userData.user.accomplishments != null"><b>Existing Work and Accomplishment</b></v-card-text>
+                   <v-list dense v-for="(accomplishment) in userData.user.accomplishments" v-bind:key='accomplishment.id'>
                     <v-list-tile class="grey lighten-3">
                     <v-list-tile-content>Accomplishment:</v-list-tile-content>
                     <v-list-tile-content class="align-end">{{ accomplishment.name }}</v-list-tile-content>
@@ -391,7 +391,7 @@ export default {
     watch: {
       'editProfileStatus': function(){
          if(this.editProfileStatus == 2){
-          //this.$router.push("/profiletab");
+          this.$router.go(-1);
           this.dialog = false;
            this.infotext = this.$store.getters.getEditProfileMessage
            this.info = true;
@@ -411,7 +411,7 @@ export default {
              this.dialog = false;
          }
          else if (this.userLoadStatus == 3){
-           this.$router.go();
+           this.$router.go(-1);
          }
          else if (this.userLoadStatus == 1){
            this.dialog = true;

@@ -22,7 +22,7 @@ mix.webpackConfig({
     new SWPrecacheWebpackPlugin({
         cacheId: 'pwa',
         filename: 'service-worker.js',
-        staticFileGlobs: ['public/**/*.{css,png,img,js,html}', 'public/fonts/vendor/**/*.{eot,svg,ttf,woff,woff2}'],
+        staticFileGlobs: ['public/**/*.{css,png,img,js,html}'],
         minify: true,
         stripPrefix: 'public/',
         maximumFileSizeToCacheInBytes: 3497152,
@@ -33,7 +33,7 @@ mix.webpackConfig({
            // '/': ['resources/views/layouts/master.blade.php'],
             // '/posts': ['resources/views/posts.blade.php']
         },
-        staticFileGlobsIgnorePatterns: [/\.map$/],
+        staticFileGlobsIgnorePatterns: [/\.map$/, /mix-manifest\.json$/, /manifest\.json$/, /service-worker\.js$/],
         navigateFallback: '/',
         runtimeCaching: [
             {

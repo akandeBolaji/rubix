@@ -133,14 +133,14 @@
       <h3> Comments</h3>
       <span v-if="post.comments != 0 && post.comments.length > 0" v-for="(comment,index) in post.comments" v-bind:key='index'>
       <v-layout >
-            <v-flex align-center justify-center layout xs2>
+            <v-flex @click="showUser(comment)" align-center justify-center layout xs2>
                <v-avatar style="font-size: 35px;" v-if="comment.avatar" color="grey lighten-4">
               <img :src="userPic(comment.avatar)" alt="Avatar">
             </v-avatar>
             <v-icon large style="font-size: 50px;" v-else>account_circle</v-icon>
           </v-flex>
           <v-flex xs10>
-             <v-card-text><span style="font-size: 11px;"><b>{{comment.first_name + " " + comment.last_name}}</b><br/>{{comment.headline}}<br/></span><span style="font-size: 16px;">{{ comment.data.text }}</span></v-card-text>
+             <v-card-text><span @click="showUser(comment)" style="font-size: 11px;"><b>{{comment.first_name + " " + comment.last_name}}</b><br/>{{comment.headline}}<br/></span><span style="font-size: 16px;">{{ comment.data.text }}</span></v-card-text>
           </v-flex>
     </v-layout>
          <v-divider></v-divider>
@@ -177,7 +177,7 @@
         <v-card>
         <v-container mt-3>
         <v-card-text v-if="post.likes.length > 0">
-               <v-layout @click="showUser(like.id)" v-for="(like,index) in post.likes" v-bind:key='index'>
+               <v-layout @click="showUser(like)" v-for="(like,index) in post.likes" v-bind:key='index'>
             <v-flex align-center justify-center layout text-xs-center xs1>
                <v-avatar v-if="like.avatar" color="grey lighten-4">
               <img :src="userPic(like.avatar)" alt="Avatar">
@@ -196,6 +196,7 @@
 </v-app>
 </template>
 <script>
+var moment = require('moment-timezone');
 import Shares from './shares.vue';
 import Likes from './likes.vue';
 import addComment from './add-comment.vue';

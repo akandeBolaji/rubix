@@ -49,11 +49,11 @@
                     <v-list dense>
                     <v-list-tile class="grey lighten-3">
                     <v-list-tile-content>Name:</v-list-tile-content>
-                    <v-list-tile-content class="align-end">{{ videos.name }}</v-list-tile-content>
+                    <v-list-tile-content class="align-end">{{ videos.name.slice(0, 12) }}</v-list-tile-content>
                     </v-list-tile>
                     <v-list-tile>
                     <v-list-tile-content>Size:</v-list-tile-content>
-                    <v-list-tile-content class="align-end">{{ videos.size }} bytes</v-list-tile-content>
+                    <v-list-tile-content class="align-end">{{ videos.size/1000000 }} mb</v-list-tile-content>
                     </v-list-tile>
                     <v-btn @click="removeClip" class="white--text" color="blue">Remove Clip</v-btn>
                    </v-list>
