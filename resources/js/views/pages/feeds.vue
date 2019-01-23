@@ -402,13 +402,13 @@ export default {
                         let alls = _.orderBy(all, ['created_at'], ['desc']);
                         //let alls = _.orderBy(_.uniqBy([alls], 'id'), ['created_at'], ['desc']);
                         let unique =_.uniqBy(alls, 'id');
-                         let difference = [];
                        if (this.post > 0) {
-                      difference = _.forEach(this.post, function(post) {
-                                _.remove(unique, function(n) {
-                                return n.id != post.id;
+                          unique = _.filter(unique, function(n) {
+                                    _.forEach(this.post, function(post) {
+                                     return n.id != post.id;
+                                  });
                                 });
-                             });
+                                console.log(unique);
                        }
                         console.log(alls);
                         console.log(unique);
@@ -427,13 +427,13 @@ export default {
                         let unique =_.uniqBy(alls, 'id');
                         console.log(alls);
                         console.log(unique);
-                        let difference = [];
-                        if (this.post > 0) {
-                        difference = _.forEach(this.post, function(post) {
-                                _.remove(unique, function(n) {
-                                return n.id != post.id;
+                       if (this.post > 0) {
+                          unique = _.filter(unique, function(n) {
+                                    _.forEach(this.post, function(post) {
+                                     return n.id != post.id;
+                                  });
                                 });
-                             });
+                                console.log(unique);
                        }
                         this.post.push(...unique);
                         $state.complete();
