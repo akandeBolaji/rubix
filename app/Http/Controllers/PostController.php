@@ -121,14 +121,14 @@ class PostController extends Controller
   public function getPosts(){
     $user = JWTAuth::parseToken()->authenticate();
     $friendspost = Post::whereIn('user_id', $user->getFriends()->pluck('id'))->with(['user','images', 'comments','userlike', 'usershare', 'usercomment', 'videos', 'likes'])->latest()->paginate(10);
-    $userpost = Post::where('user_id', $user->id)->with(['user','images', 'comments','userlike', 'usershare', 'usercomment', 'videos', 'likes'])->latest()->paginate(10);
-    $adminpost = Post::where('type', 'admin')->with(['user','images', 'comments','userlike', 'usershare', 'usercomment', 'videos', 'likes'])->latest()->paginate(10);
+    $userpost = Post::where('user_id', $user->id)->with(['user','images', 'comments','userlike', 'usershare', 'usercomment', 'videos', 'likes'])->latest()->paginate(6);
+    $adminpost = Post::where('type', 'admin')->with(['user','images', 'comments','userlike', 'usershare', 'usercomment', 'videos', 'likes'])->latest()->paginate(6);
     $friendcomments = Post::whereNotIn('user_id', $user->getFriends()->pluck('id'))
-    ->whereHas('friendcomments')->with(['user','images', 'comments','userlike', 'usershare', 'usercomment', 'videos', 'likes', 'friendcomments'])->latest()->paginate(10);
+    ->whereHas('friendcomments')->with(['user','images', 'comments','userlike', 'usershare', 'usercomment', 'videos', 'likes', 'friendcomments'])->latest()->paginate(6);
     $friendlikes = Post::whereNotIn('user_id', $user->getFriends()->pluck('id'))
-    ->whereHas('friendlikes')->with(['user','images', 'comments','userlike', 'usershare', 'usercomment', 'videos', 'likes', 'friendlikes'])->latest()->paginate(10);
+    ->whereHas('friendlikes')->with(['user','images', 'comments','userlike', 'usershare', 'usercomment', 'videos', 'likes', 'friendlikes'])->latest()->paginate(6);
     $friendshares = Post::whereNotIn('user_id', $user->getFriends()->pluck('id'))
-    ->whereHas('friendshares')->with(['user','images', 'comments','userlike', 'usershare', 'usercomment', 'videos', 'likes', 'friendshares'])->latest()->paginate(10);
+    ->whereHas('friendshares')->with(['user','images', 'comments','userlike', 'usershare', 'usercomment', 'videos', 'likes', 'friendshares'])->latest()->paginate(6);
     //$post = Post::with(['user','images', 'comments','userlike', 'videos', 'likes'])->latest()->paginate(10);
     //return response()->json(['post' => $post, 'user' => $user], 201);
     return response()->json(compact('userpost', 'friendcomments', 'adminpost', 'friendspost', 'friendshares', 'friendlikes', 'user'), 201);

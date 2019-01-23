@@ -450,7 +450,7 @@ export default {
                           this.post.push(...unique);
                         $state.complete();
                        }
-
+                        this.infinite = false;
                      }
 
                     //this.page = this.page + 1;
