@@ -3,6 +3,7 @@ import axios from 'axios'
 import VeeValidate from 'vee-validate'
 import Vuetify from 'vuetify'
 import VueXgplayer from 'vue-xgplayer'
+//import 'material-design-icons-iconfont/dist/material-design-icons.css'
 
 // require videojs style
 import 'video.js/dist/video-js.css'

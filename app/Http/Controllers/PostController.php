@@ -120,12 +120,17 @@ class PostController extends Controller
 
   public function getPosts(){
     $user = JWTAuth::parseToken()->authenticate();
-    $friendspost = Post::whereIn('user_id', $user->getFriends()->pluck('id'))->with(['user','images', 'comments','userlike', 'usershare', 'usercomment', 'videos', 'likes'])->latest()->paginate(10);
-    $userpost = Post::where('user_id', $user->id)->with(['user','images', 'comments','userlike', 'usershare', 'usercomment', 'videos', 'likes'])->latest()->paginate(10);
     $adminpost = Post::where('type', 'admin')->with(['user','images', 'comments','userlike', 'usershare', 'usercomment', 'videos', 'likes'])->latest()->paginate(10);
-    $friendcomments = Post::whereNotIn('user_id', $user->getFriends()->pluck('id'))
+    $adminid = Post::where('type', 'admin')->with(['user','images', 'comments','userlike', 'usershare', 'usercomment', 'videos', 'likes'])->pluck('id');
+    $friendspost = Post::whereIn('user_id', $user->getFriends()->pluck('id'))->with(['user','images', 'comments','userlike', 'usershare', 'usercomment', 'videos', 'likes'])->latest()->paginate(10);
+    $friendsid = Post::whereIn('user_id', $user->getFriends()->pluck('id'))->with(['user','images', 'comments','userlike', 'usershare', 'usercomment', 'videos', 'likes'])->pluck('id');
+    $userpost = Post::where('user_id', $user->id)->with(['user','images', 'comments','userlike', 'usershare', 'usercomment', 'videos', 'likes'])->latest()->paginate(10);
+    $userid = Post::where('user_id', $user->id)->with(['user','images', 'comments','userlike', 'usershare', 'usercomment', 'videos', 'likes'])->pluck('id');
+    $friendcomments = Post::whereNotIn('user_id', $user->getFriends()->pluck('id'))->whereNotIn('id', $adminid)->whereNotIn('id', $friendsid)->whereNotIn('id', $userid)
     ->whereHas('friendcomments')->with(['user','images', 'comments','userlike', 'usershare', 'usercomment', 'videos', 'likes', 'friendcomments'])->latest()->paginate(10);
-    $friendlikes = Post::whereNotIn('user_id', $user->getFriends()->pluck('id'))
+    $friendcommentsid = Post::whereNotIn('user_id', $user->getFriends()->pluck('id'))
+    ->whereHas('friendcomments')->with(['user','images', 'comments','userlike', 'usershare', 'usercomment', 'videos', 'likes', 'friendcomments'])->pluck('id');
+    $friendlikes = Post::whereNotIn('user_id', $user->getFriends()->pluck('id'))->whereNotIn('id', $adminid)->whereNotIn('id', $friendsid)->whereNotIn('id', $userid)->whereNotIn('id', $friendcommentsid)
     ->whereHas('friendlikes')->with(['user','images', 'comments','userlike', 'usershare', 'usercomment', 'videos', 'likes', 'friendlikes'])->latest()->paginate(10);
     $friendshares = Post::whereNotIn('user_id', $user->getFriends()->pluck('id'))
     ->whereHas('friendshares')->with(['user','images', 'comments','userlike', 'usershare', 'usercomment', 'videos', 'likes', 'friendshares'])->latest()->paginate(10);
