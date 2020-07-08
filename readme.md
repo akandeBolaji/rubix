@@ -1,11 +1,11 @@
 # Rubix App
 > https://apprubix.herokuapp.com
 
-![](pic(1).png)
-![](pic(2).png)
-![](pic(3).png)
-![](pic(4).png)
-![](pic(5).png)
+![](pic(1).png =100x20)
+![](pic(2).png =100x20)
+![](pic(3).png =100x20)
+![](pic(4).png =100x20)
+![](pic(5).png =100x20)
 
 ## Installation
 
