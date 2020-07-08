@@ -242,7 +242,7 @@ export default {
                     //console.log(e);
                     //console.log('hello');
                     // var container = this.$el.querySelector(".container");
-                    // if (container.scrollTop == container.scrollHeight){
+                    // if (container.scrollTop == co ntainer.scrollHeight){
                          this.message.push(e.message);
                        //  this.newmessage = this.newmessage + 1;
                     //}
