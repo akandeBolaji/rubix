@@ -23,11 +23,14 @@ class DatabaseSeeder extends Seeder
          // Ask for db migration refresh, default is no
          if ($this->command->confirm('Do you wish to refresh migration before seeding, it will clear all old data ?')) {
 
-             // Call the php artisan migrate:refresh using Artisan
-             $this->command->call('migrate:refresh');
+             // Call the php artisan migrate:fresh using Artisan
+             $this->command->call('migrate:fresh');
 
              $this->command->line("Data cleared, starting from blank database.");
          }
+         $this->call([
+            UserSeed::class,
+         ]);
          $users = factory(User::class, 100)->create();
          factory(Post::class, 367)->create();
          factory(Experience::class, 103)->create();

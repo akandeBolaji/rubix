@@ -10,11 +10,15 @@
                 alt="Avatar"
               >
             </v-avatar>
-            <v-icon
-              large
-              style="font-size: 50px;"
-                v-else
-              >account_circle</v-icon>
+            <v-avatar
+            v-else
+              color="grey lighten-4"
+            >
+              <img
+          :src="userAv(thread.withUser.id)"
+                alt="Avatar"
+              >
+            </v-avatar>
           </v-flex>
           <v-flex xs6>
              <v-card-text><b> {{thread.withUser.first_name + " " + thread.withUser.last_name}}</b><br/>
@@ -68,6 +72,9 @@ export default {
     }
   },
   methods: {
+             userAv(id){
+         return `https://robohash.org/${id}`;
+     },
       getTime(time){
          var timezone = moment.tz.guess();
          console.log(timezone);

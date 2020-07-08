@@ -31,13 +31,11 @@
                             <img :src="preview"
                             v-else-if="preview"
                             alt="avatar">
-                            <v-icon
-                                large
-                                style="font-size: 230px;"
-                                v-else
-                                >
-                                account_circle
-                            </v-icon>
+                            <img
+                            v-else
+                        :src="userAv(user.id)"
+                                alt="Avatar"
+                            >
                              <v-btn
                                 @click='addAvatar()'
                                 absolute
@@ -391,6 +389,9 @@ export default {
    },
 
   methods: {
+       userAv(id){
+         return `https://robohash.org/${id}`;
+     },
       showPost(data){
            this.$router.push(`/post/${data}`);
            console.log('go to post page');

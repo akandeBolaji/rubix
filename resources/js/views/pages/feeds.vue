@@ -30,12 +30,16 @@
                 alt="Avatar"
               >
             </v-avatar>
-              <v-icon
-                @click="showUser(post.user)"
-              large
-              style="font-size: 50px;"
-                v-else
-              >account_circle</v-icon>
+                         <v-avatar
+             v-else
+            @click="showUser(post.user)"
+            color="grey lighten-4"
+            >
+              <img
+          :src="userAv(post.user.id)"
+                alt="Avatar"
+              >
+            </v-avatar>
           </v-flex>
 
           <v-flex @click="showUser(post.user)" sm10 md10 xs9>
@@ -472,6 +476,10 @@ export default {
     },
      userPic(data){
          return '/images/users/' + data;
+     },
+
+    userAv(id){
+         return `https://robohash.org/${id}`;
      },
 
      postImage(data){

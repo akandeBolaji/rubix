@@ -13,11 +13,15 @@
                 alt="Avatar"
               >
             </v-avatar>
-            <v-icon
-              large
-              style="font-size: 50px;"
-                v-else
-              >account_circle</v-icon>
+             <v-avatar
+            v-else
+              color="grey lighten-4"
+            >
+              <img
+          :src="userAv(user.id)"
+                alt="Avatar"
+              >
+            </v-avatar>
           </v-flex>
           <v-flex xs10>
               <v-text-field v-model="data.comment" name="text" label="Leave your thoughts here" type="text"></v-text-field>
@@ -51,6 +55,9 @@ export default {
   methods: {
      userPic(data){
          return '/images/users/' + data;
+     },
+    userAv(id){
+         return `https://robohash.org/${id}`;
      },
         submit(post, data) {
             this.data.post_id = post;

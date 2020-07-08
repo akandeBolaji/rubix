@@ -17,9 +17,9 @@
                             <img :src="profilePics"
                             v-if="user && user.avatar"
                             alt="avatar">
-                            <v-icon large style="font-size: 230px;" v-else>
-                                account_circle
-                            </v-icon>
+                            <img :src="userAv(user.id)"
+                            v-else
+                            alt="avatar">
                             </v-avatar>
                         </v-flex>
                         </v-layout>
@@ -206,6 +206,9 @@ export default {
         },
 
         methods: {
+             userAv(id){
+         return `https://robohash.org/${id}`;
+     },
             sendRequest() {
                  this.dialog = true;
                  this.click = true;

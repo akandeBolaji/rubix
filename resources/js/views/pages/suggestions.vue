@@ -6,20 +6,24 @@
         <v-avatar
          @click="showUser(user)"
              v-if="user.avatar"
-            size="70px"
+            size="100px"
             >
               <img
           :src="userPic(user.avatar)"
                 alt="Avatar"
               >
             </v-avatar>
-              <v-icon
-               @click="showUser(user)"
-              large
-              style="font-size: 80px;"
-                v-else
-              >account_circle
-              </v-icon>
+            <v-avatar
+            color="grey lighten-2"
+         @click="showUser(user)"
+             v-else
+            size="100px"
+            >
+              <img
+          :src="userAv(user.id)"
+                alt="Avatar"
+              >
+            </v-avatar>
         </v-flex>
         <v-flex xs2>
                <v-icon
@@ -54,6 +58,9 @@ export default {
     }
   },
   methods: {
+       userAv(id){
+         return `https://robohash.org/${id}`;
+     },
       showUser(data){
             //if (data.id != this.user.id && data.type != 'admin') {
              this.$router.push(`/user/${data.id}`);

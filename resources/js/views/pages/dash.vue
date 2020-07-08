@@ -52,7 +52,15 @@
                <v-avatar v-if="user.avatar" color="grey lighten-4">
               <img :src="userPic(user.avatar)" alt="Avatar">
             </v-avatar>
-            <v-icon large style="font-size: 50px;" v-else>account_circle</v-icon>
+             <v-avatar
+            v-else
+              color="grey lighten-4"
+            >
+              <img
+          :src="userAv(user.id)"
+                alt="Avatar"
+              >
+            </v-avatar>
           </v-flex>
           <v-flex xs11>
              <v-card-text><b>{{user.first_name + " " + user.last_name}}</b><br/>{{user.headline}}</v-card-text>
@@ -316,7 +324,9 @@ export default {
          userPic(data){
                 return '/images/users/' + data;
             },
-
+              userAv(id){
+                return `https://robohash.org/${id}`;
+            },
          goBack(){
                 this.$router.go(-1);
             },

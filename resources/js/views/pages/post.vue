@@ -21,11 +21,15 @@
                 alt="Avatar"
               >
             </v-avatar>
-              <v-icon
-              large
-              style="font-size: 50px;"
-                v-else
-              >account_circle</v-icon>
+            <v-avatar
+            v-else
+              color="grey lighten-4"
+            >
+              <img
+          :src="userAv(user.id)"
+                alt="Avatar"
+              >
+            </v-avatar>
           </v-flex>
 
           <v-flex @click="showUser(post.user)" sm11 md10 xs10>
@@ -157,7 +161,9 @@
             <v-avatar v-if="user.avatar" color="grey lighten-4">
               <img :src="userPic(user.avatar)" alt="Avatar">
             </v-avatar>
-            <v-icon large style="font-size: 30px;" v-else>account_circle</v-icon>
+            <v-avatar v-else color="grey lighten-4">
+              <img :src="userAv(user.id)" alt="Avatar">
+            </v-avatar>
           </v-flex>
            <v-flex align-center justify-center layout text-xs-center xs10>
               <v-text-field v-model="data.comment" ref="comment" name="text" label="Leave your thoughts here" type="text"></v-text-field>
@@ -264,6 +270,9 @@ export default {
         },
 
         methods: {
+            userAv(id){
+         return `https://robohash.org/${id}`;
+     },
             getTime(time){
          var timezone = moment.tz.guess();
          console.log(timezone);

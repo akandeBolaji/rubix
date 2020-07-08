@@ -12,3 +12,13 @@ $factory->define(Post::class, function (Faker $faker) {
 
     ];
 });
+
+$factory->define(Post::class, function (Faker $faker) {
+    return [
+        'text' => $faker->realText(1500),
+        'user_id' => function () {
+            return App\User::where('id', '<=' , 2)->inRandomOrder()->first()->id;
+        },
+
+    ];
+});
