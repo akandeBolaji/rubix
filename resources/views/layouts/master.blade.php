@@ -13,6 +13,7 @@
         <link rel="manifest" href="{{url('/manifest.json')}}">
         <link href="/css/loaderone.css" type="text/css" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=Material+Icons" rel="stylesheet">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
 	    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 	    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -44,13 +45,15 @@
 	<body>
 	    <div id="root">
 	        <router-view>
-                    <h1 style="color:white; position:absolute;  top: 30%; left: 40%; font-style:italic; font-weight:bolder; font:larger;">Rubix</h1>
-                    <div class="spinner">
-                            <div class="blob top"></div>
-                            <div class="blob bottom"></div>
-                            <div class="blob left"></div>
-                            <div class="blob move-blob"></div>
-                          </div>
+                <div class="d-flex justify-content-center align-items-center" style="min-height:100vh">
+                    <div class="spinner-grow" role="status">
+                            <span class="sr-only">Loading...</span>
+                    </div>
+                    <h1><span class="text-info">Ru</span>bix</h1>
+                    <div class="spinner-grow text-info" role="status">
+                            <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
             </router-view>
 	    </div>
         <script src="/js/app.js"></script>

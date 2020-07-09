@@ -166,6 +166,7 @@ class AuthController extends Controller
             $activation_token = str_random(64);
         } while ( \DB::table('users')->where('activation_token',$activation_token)->exists());
         $user->activation_token = $activation_token;
+        $user->status = 'activated';
         $user->save();
         $profile = new \App\Profile;
         $profile->email = request('email');
@@ -180,9 +181,18 @@ class AuthController extends Controller
         //$token = JWTAuth::setToken($token);
         //JWTAuth::authenticate($token);
         //Talk::user(auth()->user()->id)->sendMessageByUserId($user->id, $body);
-        $user->notify(new Activation($user));
+        $credentials = $request->only('email', 'password');
 
-        return response()->json(['message' => 'You have been registered successfully. Please check your email for activation!']);
+        try {
+            if (! $token = JWTAuth::attempt($credentials)) {
+                return response()->json(['message' => 'Invalid Credentials! Please try again.'], 422);
+            }
+        } catch (JWTException $e) {
+            return response()->json(['message' => 'This is something wrong. Please try again!'], 500);
+        }
+        // $user->notify(new Activation($user));
+
+        return response()->json(['message' => 'You have been registered successfully. Please check your email for activation!','token' => $token]);
     }
 
     public function activate($activation_token){

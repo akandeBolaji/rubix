@@ -158,8 +158,11 @@
     watch: {
        'registerLoadStatus': function(){
          if(this.registerLoadStatus == 2){
-             this.dialog = false;
-            this.$router.push('/login');
+            this.dialog = false;
+            // this.$router.push('/login');
+            localStorage.setItem('auth_token', this.$store.getters.getToken);
+            axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('auth_token');
+            this.$router.push('/feeds');
          }
          else if (this.registerLoadStatus == 3){
              this.dialog = false;

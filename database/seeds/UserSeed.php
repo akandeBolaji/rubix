@@ -14,7 +14,7 @@ class UserSeed extends Seeder
     public function run()
     {
         User::create([
-            'email' => 'test@rubix.com',
+            'email' => 'admin@rubix.com',
             'password' => Hash::make('password'), // secret
             'remember_token' => str_random(10),
             'ip' => '197.45.57.6',
@@ -22,12 +22,13 @@ class UserSeed extends Seeder
             'phone' => '080456788657',
             'status' => 'activated',
             'view' => 4,
-            'first_name' => 'John',
-            'last_name' => 'Doe',
+            'type' => 'admin',
+            'first_name' => 'Rubix',
+            'last_name' => 'Admin',
         ]);
 
         User::create([
-            'email' => 'test1@rubix.com',
+            'email' => 'test@rubix.com',
             'password' => Hash::make('password'), // secret
             'remember_token' => str_random(10),
             'ip' => '197.45.57.6',

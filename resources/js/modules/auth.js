@@ -106,6 +106,7 @@ registerUser( { commit, state, dispatch }, data ){
       .then( function( response ){
         commit( 'setRegisterLoadStatus', 2 );
         commit( 'setRegisterMessage', response.data.message );
+        commit( 'setToken', response.data.token );
       })
       .catch( function( error ){
         commit( 'setRegisterLoadStatus', 3 );
